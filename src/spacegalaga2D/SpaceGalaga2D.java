@@ -18,6 +18,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import sprites.Background;
 import sprites.Enemy;
+import sprites.Player;
 
 /**
  *
@@ -46,6 +47,7 @@ public class SpaceGalaga2D extends Application {
     private Background background;
     
     private List<Enemy> enemies;
+    private Player player;
     
     private void setBackground(Background background1){
         root.getChildren().remove(background);
@@ -79,6 +81,15 @@ public class SpaceGalaga2D extends Application {
             }
     }
     
+    private void setPlayer(){
+        player = new Player();
+        
+        player.setTranslateX(WINDOW_WIDTH/2);
+        player.setTranslateY(WINDOW_HEIGHT * 0.95);
+        
+        camera.getChildren().add(player);
+    }
+    
     @Override
     public void start(Stage window) {
         root = new Group();
@@ -86,6 +97,7 @@ public class SpaceGalaga2D extends Application {
         camera = new Camera2D();
         
         setEnemies();
+        setPlayer();
         
         root.getChildren().add(camera);
         
