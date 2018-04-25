@@ -5,6 +5,7 @@
  */
 package spacegalaga2D;
 
+import cameras.Camera2D;
 import javafx.application.Application;
 
 import javafx.scene.Group;
@@ -14,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import sprites.Background;
+import sprites.Enemy;
 
 /**
  *
@@ -34,6 +36,7 @@ public class SpaceGalaga2D extends Application {
     }
     
     private Group root;
+    private Group camera;
     private Background background;
     
     private void setBackground(Background background1){
@@ -58,7 +61,15 @@ public class SpaceGalaga2D extends Application {
     public void start(Stage window) {
         root = new Group();
         setBackground();
-   
+        camera = new Camera2D();
+        
+        Enemy enemy = new Enemy();
+        enemy.setTranslateX(50);
+        enemy.setTranslateY(50);
+        camera.getChildren().add(enemy);
+        
+        root.getChildren().add(camera);
+        
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         
         window.setTitle(TITLE);

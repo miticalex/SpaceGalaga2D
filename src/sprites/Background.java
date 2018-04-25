@@ -32,7 +32,7 @@ public class Background extends Sprite {
         this.height = height;
     }
     
-     public void setPaint(Paint paint) { 
+    public final void setPaint(Paint paint) { 
         Rectangle background = new Rectangle(width + 10.0, height + 10.0);
         background.setFill(paint);
         
