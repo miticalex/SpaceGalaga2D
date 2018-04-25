@@ -6,6 +6,8 @@
 package spacegalaga2D;
 
 import cameras.Camera2D;
+import java.util.LinkedList;
+import java.util.List;
 import javafx.application.Application;
 
 import javafx.scene.Group;
@@ -35,9 +37,15 @@ public class SpaceGalaga2D extends Application {
         return WINDOW_HEIGHT;
     }
     
+    private static final int ENEMIES_IN_A_ROW = 6;
+    private static final int ENEMIES_IN_A_COLUMN = 3;
+    private static final int SPACE_BTW_ENEMIES = 100;
+    
     private Group root;
     private Group camera;
     private Background background;
+    
+    private List<Enemy> enemies;
     
     private void setBackground(Background background1){
         root.getChildren().remove(background);
@@ -57,16 +65,27 @@ public class SpaceGalaga2D extends Application {
         setBackground(Color.BLACK);
     }
     
+    private void setEnemies(){
+        enemies = new LinkedList<>();
+        
+        for (int i = 0; i < ENEMIES_IN_A_COLUMN; i++) 
+            for (int j = 0; j < ENEMIES_IN_A_ROW; j++) {
+                Enemy enemy = new Enemy();
+                enemy.setTranslateX((j+1) * WINDOW_WIDTH / (ENEMIES_IN_A_ROW + 1));
+                enemy.setTranslateY((i+1) * SPACE_BTW_ENEMIES);
+             
+                camera.getChildren().add(enemy);
+                enemies.add(enemy);
+            }
+    }
+    
     @Override
     public void start(Stage window) {
         root = new Group();
         setBackground();
         camera = new Camera2D();
         
-        Enemy enemy = new Enemy();
-        enemy.setTranslateX(50);
-        enemy.setTranslateY(50);
-        camera.getChildren().add(enemy);
+        setEnemies();
         
         root.getChildren().add(camera);
         
