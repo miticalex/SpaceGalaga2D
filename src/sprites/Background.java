@@ -20,39 +20,41 @@ public class Background extends Sprite {
         return width;
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
     public int getHeight() {
         return height;
     }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
     
-    private void addToGroup(Rectangle background){
-        background.setTranslateZ(BACKGROUND_DEPTH);
+     public void setPaint(Paint paint) { 
+        Rectangle background = new Rectangle(width + 10.0, height + 10.0);
+        background.setFill(paint);
         
         this.getChildren().setAll(background); 
     }
     
-    public Background(int width1, int height1, Paint paint) {
-        width = width1;
-        height = height1;
-        Rectangle background = new Rectangle(width, height, paint);
-        
-        addToGroup(background); 
+    public void setImage(Image image) { 
+        setPaint(new ImagePattern(image));
+    }
+       
+    public Background(int width, int height, Paint paint) {
+        this.width = width;
+        this.height = height;
+        setPaint(paint);
     }
 
     public Background(int width, int height, Image image) {
-        Rectangle background = new Rectangle(width, height, new ImagePattern(image));
-        
-        addToGroup(background); 
+        this(width, height, new ImagePattern(image));
     }
     
     public Background(int width, int height) {
         this(width, height, Color.BLACK);
-    }
-    
-    public void setImage(Image image) { 
-        Rectangle background = new Rectangle(width, height);
-        background.setFill(new ImagePattern(image));
-        
-        addToGroup(background); 
     }
     
     @Override

@@ -24,7 +24,6 @@ public class SpaceGalaga2D extends Application {
     
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 700;
-    private static final boolean Z_BUFFER =false;
     
     public static int getWINDOW_WIDTH() {
         return WINDOW_WIDTH;
@@ -58,9 +57,9 @@ public class SpaceGalaga2D extends Application {
     @Override
     public void start(Stage window) {
         root = new Group();
-        
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, Z_BUFFER);
         setBackground();
+   
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         
         window.setTitle(TITLE);
         window.setScene(scene);
