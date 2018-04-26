@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import spacegalaga2D.SpaceGalaga2D;
 
 public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static final int WIDTH = 50;
@@ -21,6 +22,20 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
 
     public static int getHEIGHT() {
         return HEIGHT;
+    }
+    
+    private static enum Direction {LEFT, RIGHT, STILL}
+    private static final double VELOCITY = 10;
+    
+    private Direction direction = Direction.STILL;
+    private double velocity = 0;
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public double getVelocity() {
+        return velocity;
     }
     
     private Rectangle body;
@@ -50,6 +65,23 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         this.getChildren().addAll(body, gun);
     }
     
+    private void setVelocity() {
+        switch (direction) {
+            case LEFT:
+                velocity = - VELOCITY;
+                break;
+            case RIGHT:
+                velocity = VELOCITY;
+                break;
+            case STILL:
+                velocity = 0;
+                break;
+            default:
+                throw new AssertionError();
+        }
+    
+    }
+    
     private void fireShot() {
         Shot shot = new Shot();
         shot.setTranslateX(getTranslateX());
@@ -59,13 +91,31 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (getTranslateX() + velocity < WIDTH / 2 + 5) {
+            setTranslateX(WIDTH / 2 + 5);
+        } else if (getTranslateX() + velocity > SpaceGalaga2D.getWINDOW_WIDTH() - WIDTH / 2 - 5) {
+            setTranslateX(SpaceGalaga2D.getWINDOW_WIDTH() - WIDTH / 2 - 5);
+        } else {
+            setTranslateX(getTranslateX() + velocity);
+        }
     }
     
     @Override
     public void handle(KeyEvent event) {
         if ((event.getCode() == KeyCode.SPACE) && (event.getEventType() == KeyEvent.KEY_PRESSED)) {
             fireShot();
+        } else if (event.getCode() == KeyCode.RIGHT && event.getEventType() == KeyEvent.KEY_PRESSED) {
+            direction = Direction.RIGHT;
+            setVelocity();
+        } else if (event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_PRESSED) {
+            direction = Direction.LEFT;
+            setVelocity();
+        } else if (event.getCode() == KeyCode.RIGHT && event.getEventType() == KeyEvent.KEY_RELEASED) {
+            direction = Direction.STILL;
+            setVelocity();
+        } else if (event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_RELEASED) {
+            direction = Direction.STILL;
+            setVelocity();
         }
     }
 }

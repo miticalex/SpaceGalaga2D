@@ -118,12 +118,12 @@ public class SpaceGalaga2D extends Application {
         window.setResizable(false);
         window.show();
         
-//        new AnimationTimer() {
-//            @Override
-//            public void handle(long currentNanoTime) {
-//                update();
-//            }
-//        }.start();
+        new AnimationTimer() {
+            @Override
+            public void handle(long currentNanoTime) {
+                update();
+            }
+        }.start();
     }
 
     public void update() {
@@ -140,6 +140,7 @@ public class SpaceGalaga2D extends Application {
             
             camera.getChildren().clear();
             camera.getChildren().add(player);
+            player.update();
             
             camera.getChildren().addAll(shots);
             shots.forEach(shot -> shot.update());
