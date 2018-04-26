@@ -1,9 +1,14 @@
 package sprites;
 
+import java.util.LinkedList;
+import java.util.List;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Player extends Sprite {
+public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 20;
     
@@ -21,6 +26,16 @@ public class Player extends Sprite {
     private Rectangle body;
     private Rectangle gun;
     
+    private List<Shot> shots = new LinkedList<>();
+
+    public List<Shot> getShots() {
+        return shots;
+    }
+
+    public void setShots(List<Shot> shots) {
+        this.shots = shots;
+    }
+    
     public Player() {
         body = new Rectangle(0, 0, WIDTH, HEIGHT);
         body.setTranslateX(- WIDTH/2);
@@ -35,9 +50,22 @@ public class Player extends Sprite {
         this.getChildren().addAll(body, gun);
     }
     
+    private void fireShot() {
+        Shot shot = new Shot();
+        shot.setTranslateX(getTranslateX());
+        shot.setTranslateY(getTranslateY() - GUN_HEIGHT);
+        shots.add(shot);
+    }
+    
     @Override
     public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    @Override
+    public void handle(KeyEvent event) {
+        if ((event.getCode() == KeyCode.SPACE) && (event.getEventType() == KeyEvent.KEY_PRESSED)) {
+            fireShot();
+        }
+    }
 }
