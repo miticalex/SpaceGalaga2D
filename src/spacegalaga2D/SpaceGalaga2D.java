@@ -153,11 +153,15 @@ public class SpaceGalaga2D extends Application {
             camera.getChildren().add(player);
             player.update();
             
-            camera.getChildren().addAll(shots);
-            shots.forEach(shot -> shot.update());
-            player.setShots(shots);
+            if (enemies.isEmpty()) {
+                theEnd = true;
+            } else {
+                camera.getChildren().addAll(shots);
+                shots.forEach(shot -> shot.update());
+                player.setShots(shots);
             
-            camera.getChildren().addAll(enemies);
+                camera.getChildren().addAll(enemies);
+            }
             
             time += 1.0 / 60;
         }
