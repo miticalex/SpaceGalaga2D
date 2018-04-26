@@ -136,6 +136,17 @@ public class SpaceGalaga2D extends Application {
                 if (currentShot.getTranslateY() < TOP_OF_THE_SCREEN) {
                     shots.remove(currentShot);
                 }
+                
+                // Check if shot has hit the enemy - happens when they intersect
+                for (int j = 0; j < enemies.size(); j++) {
+                    Enemy currentEnemy = enemies.get(j);
+                    if (currentShot.getBoundsInParent().intersects
+                       (currentEnemy.getBoundsInParent())) {
+                        shots.remove(currentShot);
+                        enemies.remove(currentEnemy);
+                        break;
+                    }
+                }
             }
             
             camera.getChildren().clear();
