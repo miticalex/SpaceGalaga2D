@@ -120,7 +120,7 @@ public class Enemy extends Sprite {
     }
     
     public void rotateWings(){
-        // change the way how pivot is set....
+        // TODO: change the way how pivot is set....
         RotateTransition rotLE = new RotateTransition(Duration.seconds(2), lEar);
         RotateTransition rotRE = new RotateTransition(Duration.seconds(2), rEar);
         

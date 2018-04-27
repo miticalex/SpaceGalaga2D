@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sprites.Background;
 import sprites.Enemy;
@@ -56,6 +58,7 @@ public class SpaceGalaga2D extends Application {
     
     private double time = 0;
     private boolean theEnd = false;
+    private Text elapsed;
     
     private void setBackground(Background background1){
         root.getChildren().remove(background);
@@ -170,6 +173,14 @@ public class SpaceGalaga2D extends Application {
             
                 camera.getChildren().addAll(enemies);
             }
+            
+            //TODO: enhance positioning
+            root.getChildren().remove(elapsed);
+            elapsed = new Text(WINDOW_WIDTH/2 - 30, 20,  "Time: " + (int)time);
+            elapsed.setFont(new Font(16));
+            elapsed.setFill(Color.RED);
+            elapsed.setStroke(Color.RED);
+            root.getChildren().add(elapsed);
             
             time += 1.0 / 60;
         }
