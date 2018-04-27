@@ -1,0 +1,46 @@
+package shapes;
+
+import java.util.Random;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
+
+/**
+ *
+ * @author AM
+ */
+public class Star extends Polyline{
+    private static final int MIN_POINTS = 4;
+    private static final int MAX_POINTS = 8;
+    
+    private static final double MIN_OUTER_R = 10;
+    private static final double MAX_OUTER_R = 20;
+    
+    
+          
+    
+    private int numPoints;
+    private double outerR;
+    private double innerR;
+    
+    public Star(){
+        Random rnd = new Random();
+        
+        numPoints = MIN_POINTS + rnd.nextInt(MAX_POINTS - MIN_POINTS);
+        outerR = MIN_OUTER_R + rnd.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
+        innerR = outerR * (0.16 + rnd.nextDouble() * 0.4);
+        
+        for (int i = 0; i < numPoints; i++) {
+            double x0 = Math.cos(-Math.PI/2 + i*Math.PI*2/numPoints) * outerR;
+            double y0 = Math.sin(-Math.PI/2 + i*Math.PI*2/numPoints) * outerR;
+            this.getPoints().addAll(x0, y0);
+            
+            double x1 = Math.cos(-Math.PI/2 + (i+0.5)*Math.PI*2/numPoints) * innerR;
+            double y1 = Math.sin(-Math.PI/2 + (i+0.5)*Math.PI*2/numPoints) * innerR;
+            this.getPoints().addAll(x1, y1);
+        }
+        
+        this.setStroke(Color.BLACK);
+        this.setFill(Color.YELLOW);
+    }
+}

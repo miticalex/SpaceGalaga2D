@@ -8,6 +8,7 @@ package spacegalaga2D;
 import cameras.Camera2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 
@@ -19,6 +20,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shapes.Star;
 import sprites.Background;
 import sprites.Enemy;
 import sprites.Player;
@@ -51,6 +53,7 @@ public class SpaceGalaga2D extends Application {
     private Group root;
     private Camera2D camera;
     private Background background;
+    private List<Star> stars;
 //    TODO: Consider setting a camera in the way below
 //    private static enum View {SCENE, PLAYER}; 
 //    private View view = View.SCENE;
@@ -83,6 +86,19 @@ public class SpaceGalaga2D extends Application {
     }
     private void setBackground(){
         setBackground(Color.BLACK);
+    }
+    
+    public void setStars(){
+        stars = new LinkedList<>();
+        
+        for (int i = 0; i < 20; i++) {
+            Star star = new Star();
+            star.setTranslateX(10 + (new Random()).nextInt(WINDOW_WIDTH-20));
+            star.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT-20));
+            
+            stars.add(star);
+            camera.getChildren().add(star);
+        }
     }
     
     private void setEnemies(){
@@ -118,6 +134,7 @@ public class SpaceGalaga2D extends Application {
         setBackground(Color.BLACK, Color.DARKBLUE);
         camera = new Camera2D();
         
+        setStars();
         setEnemies();
         setPlayer();
         
@@ -165,6 +182,7 @@ public class SpaceGalaga2D extends Application {
             
             camera.getChildren().clear();
             
+            camera.getChildren().addAll(stars);
             camera.getChildren().add(player);
             player.update();
             if (player.isPlayerCamera())

@@ -48,7 +48,6 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         return playerCamera;
     }
     
-    
 //    private Rectangle body;
     private Path body;
 //    private Rectangle gun;    
