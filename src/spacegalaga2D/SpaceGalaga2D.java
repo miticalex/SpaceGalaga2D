@@ -104,7 +104,7 @@ public class SpaceGalaga2D extends Application {
         player = new Player();
         
         player.setTranslateX(WINDOW_WIDTH/2);
-        player.setTranslateY(WINDOW_HEIGHT * 0.95);
+        player.setTranslateY(WINDOW_HEIGHT * 0.98);
         
         camera.getChildren().add(player);
     }
