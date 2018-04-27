@@ -2,8 +2,11 @@ package sprites;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -47,6 +50,20 @@ public class Background extends Sprite {
         this.width = width;
         this.height = height;
         setPaint(paint);
+    }
+    
+    public Background(int width, int height, Color color1, Color color2) {
+        this.width = width;
+        this.height = height;
+        
+        Stop[] backgroundShades = new Stop[]{
+            new Stop(0, color1), 
+            new Stop(1, color2)
+        };
+        LinearGradient backgroundGradient = new LinearGradient(0, 0, 0, 1, true, 
+                CycleMethod.NO_CYCLE, backgroundShades);
+        
+        setPaint(backgroundGradient);
     }
 
     public Background(int width, int height, Image image) {

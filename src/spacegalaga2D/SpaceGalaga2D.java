@@ -68,6 +68,10 @@ public class SpaceGalaga2D extends Application {
         setBackground(new Background(WINDOW_WIDTH, WINDOW_HEIGHT, paint));
     }
     
+    private void setBackground(Color color1, Color color2){
+        setBackground(new Background(WINDOW_WIDTH, WINDOW_HEIGHT, color1, color2));
+    }
+        
     private void setBackground(Image image){
         setBackground(new Background(WINDOW_WIDTH, WINDOW_HEIGHT, image));
     }
@@ -101,7 +105,7 @@ public class SpaceGalaga2D extends Application {
     @Override
     public void start(Stage window) {
         root = new Group();
-        setBackground();
+        setBackground(Color.BLACK, Color.DARKBLUE);
         camera = new Camera2D();
         
         setEnemies();
