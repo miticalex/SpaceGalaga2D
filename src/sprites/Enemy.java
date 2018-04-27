@@ -2,6 +2,7 @@ package sprites;
 
 import javafx.animation.Animation;
 import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -10,6 +11,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 public class Enemy extends Sprite {
@@ -117,11 +119,36 @@ public class Enemy extends Sprite {
         st.play();
     }
     
+    public void rotateWings(){
+        // change the way how pivot is set....
+        RotateTransition rotLE = new RotateTransition(Duration.seconds(2), lEar);
+        RotateTransition rotRE = new RotateTransition(Duration.seconds(2), rEar);
+        
+        lEar.getTransforms().add(new Translate(-(EAR_WIDTH+5)/2, 0));
+        lEar.setTranslateX((EAR_WIDTH+5)/2);
+        
+        rotLE.setFromAngle(-20);
+        rotLE.setToAngle(20);
+        rotLE.setAutoReverse(true);
+        rotLE.setCycleCount(Animation.INDEFINITE);
+        rotLE.play();
+        
+        rEar.getTransforms().add(new Translate((EAR_WIDTH+5)/2, 0));
+        rEar.setTranslateX(-(EAR_WIDTH+5)/2);
+        rotRE.setFromAngle(20);
+        rotRE.setToAngle(-20);
+        rotRE.setAutoReverse(true);
+        rotRE.setCycleCount(Animation.INDEFINITE);
+        rotRE.play();
+    }
+    
     public Enemy() {
         addEars();
         addBody();
         addMouth();
         addEyes();
+        
+        rotateWings();
     }
     
     @Override
