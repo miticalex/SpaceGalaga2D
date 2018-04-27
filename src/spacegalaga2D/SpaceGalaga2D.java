@@ -87,6 +87,10 @@ public class SpaceGalaga2D extends Application {
                 Enemy enemy = new Enemy();
                 enemy.setTranslateX((j+1) * WINDOW_WIDTH / (ENEMIES_IN_A_ROW + 1));
                 enemy.setTranslateY((i+1) * SPACE_BTW_ENEMIES);
+                if ((i%2==0 && j%2==0) || (i%2==1 && j%2==1))
+                    enemy.addLeftWink();
+                else 
+                    enemy.addRightWink();
              
                 camera.getChildren().add(enemy);
                 enemies.add(enemy);

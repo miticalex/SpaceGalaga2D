@@ -1,5 +1,8 @@
 package sprites;
 
+import javafx.animation.Animation;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -7,6 +10,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 public class Enemy extends Sprite {
     private static final int BODY_WIDTH = 50;
@@ -83,6 +87,34 @@ public class Enemy extends Sprite {
         rPupil.setFill(Color.BLACK);
         
         this.getChildren().addAll(lEye, lPupil, rEye, rPupil);
+    }
+    
+    public void addLeftWink(){
+        ScaleTransition stE = new ScaleTransition(Duration.seconds(2), lEye);
+        stE.setFromY(1);
+        stE.setToY(0.5);
+        ScaleTransition stP = new ScaleTransition(Duration.seconds(2), lPupil);
+        stP.setFromY(1);
+        stP.setToY(0.5);
+        
+        ParallelTransition st = new ParallelTransition(stE, stP);
+        st.setAutoReverse(true);
+        st.setCycleCount(Animation.INDEFINITE);
+        st.play();
+    }
+    
+    public void addRightWink(){
+        ScaleTransition stE = new ScaleTransition(Duration.seconds(2), rEye);
+        stE.setFromY(1);
+        stE.setToY(0.5);
+        ScaleTransition stP = new ScaleTransition(Duration.seconds(2), rPupil);
+        stP.setFromY(1);
+        stP.setToY(0.5);
+        
+        ParallelTransition st = new ParallelTransition(stE, stP);
+        st.setAutoReverse(true);
+        st.setCycleCount(Animation.INDEFINITE);
+        st.play();
     }
     
     public Enemy() {
