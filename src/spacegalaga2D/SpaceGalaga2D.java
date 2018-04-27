@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sprites.Background;
 import sprites.Enemy;
@@ -47,8 +49,11 @@ public class SpaceGalaga2D extends Application {
     private static final int SPACE_BTW_ENEMIES = 100;
     
     private Group root;
-    private Group camera;
+    private Camera2D camera;
     private Background background;
+//    TODO: Consider setting a camera in the way below
+//    private static enum View {SCENE, PLAYER}; 
+//    private View view = View.SCENE;
     
     private List<Enemy> enemies;
     private Player player;
@@ -56,6 +61,7 @@ public class SpaceGalaga2D extends Application {
     
     private double time = 0;
     private boolean theEnd = false;
+    private Text elapsed;
     
     private void setBackground(Background background1){
         root.getChildren().remove(background);
@@ -68,6 +74,10 @@ public class SpaceGalaga2D extends Application {
         setBackground(new Background(WINDOW_WIDTH, WINDOW_HEIGHT, paint));
     }
     
+    private void setBackground(Color color1, Color color2){
+        setBackground(new Background(WINDOW_WIDTH, WINDOW_HEIGHT, color1, color2));
+    }
+        
     private void setBackground(Image image){
         setBackground(new Background(WINDOW_WIDTH, WINDOW_HEIGHT, image));
     }
@@ -83,6 +93,10 @@ public class SpaceGalaga2D extends Application {
                 Enemy enemy = new Enemy();
                 enemy.setTranslateX((j+1) * WINDOW_WIDTH / (ENEMIES_IN_A_ROW + 1));
                 enemy.setTranslateY((i+1) * SPACE_BTW_ENEMIES);
+                if ((i%2==0 && j%2==0) || (i%2==1 && j%2==1))
+                    enemy.addLeftWink();
+                else 
+                    enemy.addRightWink();
              
                 camera.getChildren().add(enemy);
                 enemies.add(enemy);
@@ -93,7 +107,7 @@ public class SpaceGalaga2D extends Application {
         player = new Player();
         
         player.setTranslateX(WINDOW_WIDTH/2);
-        player.setTranslateY(WINDOW_HEIGHT * 0.95);
+        player.setTranslateY(WINDOW_HEIGHT * 0.98);
         
         camera.getChildren().add(player);
     }
@@ -101,7 +115,7 @@ public class SpaceGalaga2D extends Application {
     @Override
     public void start(Stage window) {
         root = new Group();
-        setBackground();
+        setBackground(Color.BLACK, Color.DARKBLUE);
         camera = new Camera2D();
         
         setEnemies();
@@ -150,8 +164,13 @@ public class SpaceGalaga2D extends Application {
             }
             
             camera.getChildren().clear();
+            
             camera.getChildren().add(player);
             player.update();
+            if (player.isPlayerCamera())
+                camera.setTranslateX(WINDOW_WIDTH/2 - player.getTranslateX());
+            else
+                camera.setTranslateX(0);
             
             if (enemies.isEmpty()) {
                 theEnd = true;
@@ -162,6 +181,14 @@ public class SpaceGalaga2D extends Application {
             
                 camera.getChildren().addAll(enemies);
             }
+            
+            //TODO: enhance positioning
+            root.getChildren().remove(elapsed);
+            elapsed = new Text(WINDOW_WIDTH/2 - 30, 20,  "Time: " + (int)time);
+            elapsed.setFont(new Font(16));
+            elapsed.setFill(Color.RED);
+            elapsed.setStroke(Color.RED);
+            root.getChildren().add(elapsed);
             
             time += 1.0 / 60;
         }
