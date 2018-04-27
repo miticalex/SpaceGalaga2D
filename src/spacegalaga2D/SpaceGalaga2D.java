@@ -49,8 +49,11 @@ public class SpaceGalaga2D extends Application {
     private static final int SPACE_BTW_ENEMIES = 100;
     
     private Group root;
-    private Group camera;
+    private Camera2D camera;
     private Background background;
+//    TODO: Consider setting a camera in the way below
+//    private static enum View {SCENE, PLAYER}; 
+//    private View view = View.SCENE;
     
     private List<Enemy> enemies;
     private Player player;
@@ -161,8 +164,13 @@ public class SpaceGalaga2D extends Application {
             }
             
             camera.getChildren().clear();
+            
             camera.getChildren().add(player);
             player.update();
+            if (player.isPlayerCamera())
+                camera.setTranslateX(WINDOW_WIDTH/2 - player.getTranslateX());
+            else
+                camera.setTranslateX(0);
             
             if (enemies.isEmpty()) {
                 theEnd = true;

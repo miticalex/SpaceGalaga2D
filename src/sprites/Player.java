@@ -12,7 +12,6 @@ import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 import spacegalaga2D.SpaceGalaga2D;
 
 public class Player extends Sprite implements EventHandler<KeyEvent> {
@@ -43,6 +42,12 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     public double getVelocity() {
         return velocity;
     }
+     
+    private boolean playerCamera = false;
+    public boolean isPlayerCamera() {
+        return playerCamera;
+    }
+    
     
 //    private Rectangle body;
     private Path body;
@@ -119,18 +124,31 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     @Override
     public void handle(KeyEvent event) {
-        if ((event.getCode() == KeyCode.SPACE) && (event.getEventType() == KeyEvent.KEY_PRESSED)) {
-            fireShot();
-        } else if (event.getCode() == KeyCode.RIGHT && event.getEventType() == KeyEvent.KEY_PRESSED) {
-            direction = Direction.RIGHT;
-            setVelocity();
-        } else if (event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_PRESSED) {
-            direction = Direction.LEFT;
-            setVelocity();
-        } else if (event.getCode() == KeyCode.RIGHT && event.getEventType() == KeyEvent.KEY_RELEASED) {
-            direction = Direction.STILL;
-            setVelocity();
-        } else if (event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_RELEASED) {
+        if  (event.getEventType() == KeyEvent.KEY_PRESSED){
+            switch (event.getCode()) {
+                case SPACE:
+                    fireShot();
+                    break;
+                case RIGHT:
+                    direction = Direction.RIGHT;
+                    setVelocity();
+                    break;
+                case LEFT:
+                    direction = Direction.LEFT;
+                    setVelocity();
+                    break;
+                case DIGIT1:
+                    playerCamera = false;
+                    break; 
+                case DIGIT2:
+                    playerCamera = true;
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        }
+        
+        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) && event.getEventType() == KeyEvent.KEY_RELEASED) {
             direction = Direction.STILL;
             setVelocity();
         }
