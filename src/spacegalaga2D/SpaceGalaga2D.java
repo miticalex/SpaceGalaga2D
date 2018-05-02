@@ -14,6 +14,7 @@ import javafx.application.Application;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -37,6 +38,8 @@ public class SpaceGalaga2D extends Application {
     private static final int WINDOW_HEIGHT = 700;
     
     private static final int TOP_OF_THE_SCREEN = 0;
+    private static final double STARS_VELOCITY = 0.5;
+    private static final int MIN_STARS = 3;
     
     public static int getWINDOW_WIDTH() {
         return WINDOW_WIDTH;
@@ -49,6 +52,9 @@ public class SpaceGalaga2D extends Application {
     private static final int ENEMIES_IN_A_ROW = 6;
     private static final int ENEMIES_IN_A_COLUMN = 3;
     private static final int SPACE_BTW_ENEMIES = 100;
+    
+    private static final int NUM_STARS = 12;
+    private static final int FIRMAMENT_VELOCITY = 2;
     
     private Group root;
     private Camera2D camera;
@@ -91,10 +97,10 @@ public class SpaceGalaga2D extends Application {
     public void setStars(){
         stars = new LinkedList<>();
         
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < NUM_STARS; i++) {
             Star star = new Star();
-            star.setTranslateX(10 + (new Random()).nextInt(WINDOW_WIDTH-20));
-            star.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT-20));
+            star.setTranslateX(10 + (new Random()).nextInt(WINDOW_WIDTH - 20));
+            star.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
             
             stars.add(star);
             camera.getChildren().add(star);
@@ -128,6 +134,24 @@ public class SpaceGalaga2D extends Application {
         camera.getChildren().add(player);
     }
     
+    private void rotateStars(){
+        for (Star star : stars) {
+            if (star.getTranslateX() - STARS_VELOCITY < 0){
+                stars.remove(star);
+                if (stars.size() < MIN_STARS){
+                    Star newStar = new Star();
+                    newStar.setTranslateX(WINDOW_WIDTH);
+                    newStar.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
+
+                    stars.add(newStar);
+                }
+            }
+            else {
+                star.setTranslateX(star.getTranslateX() - STARS_VELOCITY);
+            }
+        }
+    }
+    
     @Override
     public void start(Stage window) {
         root = new Group();
@@ -140,7 +164,7 @@ public class SpaceGalaga2D extends Application {
         
         root.getChildren().add(camera);
         
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, false, SceneAntialiasing.BALANCED);
         scene.setOnKeyPressed(player);
         scene.setOnKeyReleased(player);
         
@@ -158,6 +182,8 @@ public class SpaceGalaga2D extends Application {
     }
 
     public void update() {
+        rotateStars();
+        
         if (theEnd == false) {
             shots = player.getShots();
             

@@ -15,20 +15,21 @@ public class Star extends Polyline{
     
     private static final double MIN_OUTER_R = 10;
     private static final double MAX_OUTER_R = 20;
-    
-    
-          
+
+    public static double getMAX_OUTER_R() {
+        return MAX_OUTER_R;
+    }
     
     private int numPoints;
     private double outerR;
     private double innerR;
     
     public Star(){
-        Random rnd = new Random();
+        Random random = new Random();
         
-        numPoints = MIN_POINTS + rnd.nextInt(MAX_POINTS - MIN_POINTS);
-        outerR = MIN_OUTER_R + rnd.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
-        innerR = outerR * (0.16 + rnd.nextDouble() * 0.4);
+        numPoints = MIN_POINTS + random.nextInt(MAX_POINTS - MIN_POINTS);
+        outerR = MIN_OUTER_R + random.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
+        innerR = outerR * (0.16 + random.nextDouble() * 0.4);
         
         for (int i = 0; i < numPoints; i++) {
             double x0 = Math.cos(-Math.PI/2 + i*Math.PI*2/numPoints) * outerR;
@@ -42,5 +43,6 @@ public class Star extends Polyline{
         
         this.setStroke(Color.BLACK);
         this.setFill(Color.YELLOW);
+        this.setRotate(90.*random.nextDouble());
     }
 }
