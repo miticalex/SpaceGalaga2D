@@ -20,20 +20,22 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     private static final int GUN_WIDTH = 20;
     private static final int GUN_HEIGHT = 20;
+    private static final int GUN_STROKE_WIDTH = 10;
     
-    public static int getWIDTH() {
+    public static int getWidth() {
         return BODY_WIDTH;
     }
 
-    public static int getHEIGHT() {
-        return BODY_HEIGHT + GUN_HEIGHT;
+    public static int getHeight() {
+        return BODY_HEIGHT + GUN_HEIGHT + GUN_STROKE_WIDTH/2;
     }
     
-    private static enum Direction {LEFT, RIGHT, STILL}
+    private static enum Direction {LEFT, RIGHT, UP, DOWN, STILL}
     private static final double VELOCITY = 10;
     
     private Direction direction = Direction.STILL;
     private double velocity = 0;
+    private double verticalVelocity = 0;
 
     public Direction getDirection() {
         return direction;
@@ -42,7 +44,11 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     public double getVelocity() {
         return velocity;
     }
-     
+
+    public double getVerticalVelocity() {
+        return verticalVelocity;
+    }
+    
     private boolean playerCamera = false;
     public boolean isPlayerCamera() {
         return playerCamera;
@@ -81,7 +87,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         gun = new Arc(0, - BODY_HEIGHT, GUN_WIDTH/2, GUN_HEIGHT, 0, 180);
         gun.setFill(Color.BLACK);
         gun.setStroke(Color.SKYBLUE);
-        gun.setStrokeWidth(10);      
+        gun.setStrokeWidth(GUN_STROKE_WIDTH);      
         
         this.getChildren().addAll(body, gun);
     }
@@ -94,8 +100,15 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             case RIGHT:
                 velocity = VELOCITY;
                 break;
+            case UP:
+                verticalVelocity = - VELOCITY;
+                break;
+            case DOWN:
+                verticalVelocity = VELOCITY;
+                break;
             case STILL:
                 velocity = 0;
+                verticalVelocity = 0;
                 break;
             default:
                 throw new AssertionError();
@@ -119,6 +132,14 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         } else {
             setTranslateX(getTranslateX() + velocity);
         }
+        
+        if (getTranslateY() + verticalVelocity < getHeight() + 5) {
+            setTranslateY(getHeight() + 5);
+        } else if (getTranslateY() + verticalVelocity > SpaceGalaga2D.getWINDOW_HEIGHT() - 5) {
+            setTranslateY(SpaceGalaga2D.getWINDOW_HEIGHT() - 5);
+        } else {
+            setTranslateY(getTranslateY() + verticalVelocity);
+        }
     }
     
     @Override
@@ -136,6 +157,14 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     direction = Direction.LEFT;
                     setVelocity();
                     break;
+                case UP:
+                    direction = Direction.UP;
+                    setVelocity();
+                    break;
+                case DOWN:
+                    direction = Direction.DOWN;
+                    setVelocity();
+                    break;
                 case DIGIT1:
                     playerCamera = false;
                     break; 
@@ -147,7 +176,9 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             }
         }
         
-        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) && event.getEventType() == KeyEvent.KEY_RELEASED) {
+        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT 
+                ) 
+                && event.getEventType() == KeyEvent.KEY_RELEASED) {
             direction = Direction.STILL;
             setVelocity();
         }
