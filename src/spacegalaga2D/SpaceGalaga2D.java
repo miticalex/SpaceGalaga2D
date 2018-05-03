@@ -38,7 +38,7 @@ public class SpaceGalaga2D extends Application {
     private static final int WINDOW_HEIGHT = 700;
     
     private static final int TOP_OF_THE_SCREEN = 0;
-    private static final double STARS_VELOCITY = 0.5;
+    private static final double STARS_VELOCITY = 1;
     private static final int MIN_STARS = 3;
     
     public static int getWINDOW_WIDTH() {
@@ -98,10 +98,8 @@ public class SpaceGalaga2D extends Application {
         stars = new LinkedList<>();
         
         for (int i = 0; i < NUM_STARS; i++) {
-            Star star = new Star();
-            star.setTranslateX(10 + (new Random()).nextInt(WINDOW_WIDTH - 20));
-            star.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
-            
+            Star star = new Star(-WINDOW_WIDTH/2 + 10 + (new Random()).nextInt(2*WINDOW_WIDTH - 20),
+                                    10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));            
             stars.add(star);
             camera.getChildren().add(star);
         }
@@ -135,20 +133,39 @@ public class SpaceGalaga2D extends Application {
     }
     
     private void rotateStars(){
+        if (stars.size()<NUM_STARS && (new Random()).nextDouble()<0.005){
+            Star star = new Star(1.5*WINDOW_WIDTH,
+                                10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
+            stars.add(star);
+            camera.getChildren().add(star);
+        }
+        
         for (Star star : stars) {
-            if (star.getTranslateX() - STARS_VELOCITY < 0){
+            if (star.getTranslateX() - STARS_VELOCITY < -WINDOW_WIDTH/2){
                 stars.remove(star);
-                if (stars.size() < MIN_STARS){
-                    Star newStar = new Star();
-                    newStar.setTranslateX(WINDOW_WIDTH);
-                    newStar.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
-
-                    stars.add(newStar);
-                }
-            }
-            else {
+            } else {
                 star.setTranslateX(star.getTranslateX() - STARS_VELOCITY);
             }
+        }
+    }
+    
+    private void updateStars(){
+        rotateStars();
+        
+        //ENSURE THERE IS NO LESS THAN 3 STARS
+        int starsOnCamera = 0;
+        for (Star star : stars) {
+            if  ((star.getTranslateX() >= -camera.getTranslateX()) &&
+            (star.getTranslateX() <= -camera.getTranslateX() + WINDOW_WIDTH + 2*star.getOuterR()))
+                starsOnCamera++;
+        }
+        
+        for (int i = starsOnCamera; i < MIN_STARS; i++) {
+            Star newStar = new Star();
+            newStar.setTranslateX(-camera.getTranslateX() + WINDOW_WIDTH + 2*newStar.getOuterR());
+            newStar.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
+
+            stars.add(newStar);
         }
     }
     
@@ -182,8 +199,14 @@ public class SpaceGalaga2D extends Application {
     }
 
     public void update() {
-        rotateStars();
+        updateStars();
+        
         camera.getChildren().clear();
+        if (player.isPlayerCamera())
+            camera.setTranslateX(WINDOW_WIDTH/2 - player.getTranslateX());
+        else
+            camera.setTranslateX(0);
+
         camera.getChildren().addAll(stars);
         camera.getChildren().add(player);
         player.update();
@@ -209,11 +232,6 @@ public class SpaceGalaga2D extends Application {
                     }
                 }
             }
-            
-            if (player.isPlayerCamera())
-                camera.setTranslateX(WINDOW_WIDTH/2 - player.getTranslateX());
-            else
-                camera.setTranslateX(0);
             
             if (enemies.isEmpty()) {
                 theEnd = true;
