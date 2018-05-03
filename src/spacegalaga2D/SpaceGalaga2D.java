@@ -183,6 +183,8 @@ public class SpaceGalaga2D extends Application {
 
     public void update() {
         rotateStars();
+        camera.getChildren().clear();
+        camera.getChildren().addAll(stars);
         
         if (theEnd == false) {
             shots = player.getShots();
@@ -206,9 +208,6 @@ public class SpaceGalaga2D extends Application {
                 }
             }
             
-            camera.getChildren().clear();
-            
-            camera.getChildren().addAll(stars);
             camera.getChildren().add(player);
             player.update();
             if (player.isPlayerCamera())
