@@ -77,6 +77,9 @@ public class SpaceGalaga2D extends Application {
     private Text elapsed;
     private Text pointsField;
     
+    private Text theEndLabel;
+    private Text pointsEarnedLabel;
+    
     //SET METHODS SECTION
     
     private void setBackground(Background background1){
@@ -157,6 +160,30 @@ public class SpaceGalaga2D extends Application {
         pointsField.setStroke(Color.RED);
         
         root.getChildren().add(pointsField);
+    }
+    
+    private void setTheEnd(){
+        theEndLabel = new Text("The End");
+        pointsEarnedLabel = new Text("Points earned: " + (int)points);
+        
+        theEndLabel.setFont(new Font(64));
+        theEndLabel.setTranslateX(WINDOW_WIDTH/2
+                - theEndLabel.getBoundsInParent().getWidth()/2);
+        theEndLabel.setTranslateY(WINDOW_HEIGHT/2
+                - theEndLabel.getBoundsInParent().getHeight()/2);
+        theEndLabel.setFill(Color.RED);
+        theEndLabel.setStroke(Color.BLACK);
+        
+        pointsEarnedLabel.setFont(new Font(64));
+        pointsEarnedLabel.setTranslateX(WINDOW_WIDTH/2
+                - pointsEarnedLabel.getBoundsInParent().getWidth()/2);
+        pointsEarnedLabel.setTranslateY(WINDOW_HEIGHT/2
+                + pointsEarnedLabel.getBoundsInParent().getHeight());
+        pointsEarnedLabel.setFill(Color.RED);
+        pointsEarnedLabel.setStroke(Color.BLACK);
+        
+        root.getChildren().add(theEndLabel);
+        root.getChildren().add(pointsEarnedLabel);
     }
     
     // UPDATE METHODS SECTION
@@ -241,9 +268,19 @@ public class SpaceGalaga2D extends Application {
 
         camera.getChildren().addAll(stars);
         camera.getChildren().add(player);
+        camera.getChildren().addAll(enemies);
         player.update();
         
         if (theEnd == false) {
+            for (Enemy enemy : enemies) {
+                if (player.getBoundsInParent().intersects
+                   (enemy.getBoundsInParent())) {
+                    theEnd = true;
+                    setTheEnd();
+                    break;
+                }
+            }
+            
             shots = player.getShots();
             
             //remove enemies
@@ -266,12 +303,11 @@ public class SpaceGalaga2D extends Application {
             
             if (enemies.isEmpty()) {
                 theEnd = true;
+                setTheEnd();
             } else {
                 camera.getChildren().addAll(shots);
                 shots.forEach(shot -> shot.update());
                 player.setShots(shots);
-            
-                camera.getChildren().addAll(enemies);
             }
             
             root.getChildren().remove(elapsed);
