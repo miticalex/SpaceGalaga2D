@@ -37,12 +37,6 @@ public class SpaceGalaga2D extends Application {
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 700;
     
-    private static final int TOP_OF_THE_SCREEN = 0;
-    private static final double STARS_VELOCITY = 1;
-    private static final int MIN_STARS = 3;
-    
-    private static final int POINTS_FOR_ENEMY = 100;
-    
     public static int getWINDOW_WIDTH() {
         return WINDOW_WIDTH;
     }
@@ -50,13 +44,19 @@ public class SpaceGalaga2D extends Application {
     public static int getWINDOW_HEIGHT() {
         return WINDOW_HEIGHT;
     }
+    private static final int TOP_OF_THE_SCREEN = 0;
+    private static final double STARS_VELOCITY = 1;
+    private static final int MIN_STARS = 3;
+    
+    private static final int POINTS_FOR_ENEMY = 100;
     
     private static final int ENEMIES_IN_A_ROW = 6;
     private static final int ENEMIES_IN_A_COLUMN = 3;
     private static final int SPACE_BTW_ENEMIES = 100;
     
     private static final int NUM_STARS = 12;
-    private static final int FIRMAMENT_VELOCITY = 2;
+    
+    private static final int LABELS_POSITION_Y = 20;
     
     private Group root;
     private Camera2D camera;
@@ -76,6 +76,8 @@ public class SpaceGalaga2D extends Application {
     
     private Text elapsed;
     private Text pointsField;
+    
+    //SET METHODS SECTION
     
     private void setBackground(Background background1){
         root.getChildren().remove(background);
@@ -137,6 +139,28 @@ public class SpaceGalaga2D extends Application {
         camera.getChildren().add(player);
     }
     
+    private void setTime(){
+        elapsed = new Text("Time: " + (int)time);
+        elapsed.setFont(new Font(16));
+        elapsed.setFill(Color.RED);
+        elapsed.setStroke(Color.RED);
+        elapsed.setTranslateX(WINDOW_WIDTH/2 - elapsed.getBoundsInParent().getWidth()/2);
+        elapsed.setTranslateY(LABELS_POSITION_Y);
+        
+        root.getChildren().add(elapsed);
+    }
+    
+    private void setPoints(){
+        pointsField = new Text(WINDOW_WIDTH - 150, LABELS_POSITION_Y, "Points: " + (int)points);
+        pointsField.setFont(new Font(16));
+        pointsField.setFill(Color.RED);
+        pointsField.setStroke(Color.RED);
+        
+        root.getChildren().add(pointsField);
+    }
+    
+    // UPDATE METHODS SECTION
+    
     private void rotateStars(){
         if (stars.size()<NUM_STARS && (new Random()).nextDouble()<0.005){
             Star star = new Star(1.5*WINDOW_WIDTH,
@@ -186,6 +210,9 @@ public class SpaceGalaga2D extends Application {
         
         root.getChildren().add(camera);
         
+        setTime();
+        setPoints();
+        
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, false, SceneAntialiasing.BALANCED);
         scene.setOnKeyPressed(player);
         scene.setOnKeyReleased(player);
@@ -219,16 +246,14 @@ public class SpaceGalaga2D extends Application {
         if (theEnd == false) {
             shots = player.getShots();
             
-            for (int i = 0; i < shots.size(); i++) {
-                Shot currentShot = shots.get(i);
-            
+            //remove enemies
+            for (Shot currentShot : shots) {
                 if (currentShot.getTranslateY() < TOP_OF_THE_SCREEN) {
                     shots.remove(currentShot);
                 }
                 
                 // Check if shot has hit the enemy - happens when they intersect
-                for (int j = 0; j < enemies.size(); j++) {
-                    Enemy currentEnemy = enemies.get(j);
+                for (Enemy currentEnemy : enemies) {
                     if (currentShot.getBoundsInParent().intersects
                        (currentEnemy.getBoundsInParent())) {
                         shots.remove(currentShot);
@@ -249,19 +274,13 @@ public class SpaceGalaga2D extends Application {
                 camera.getChildren().addAll(enemies);
             }
             
-            //TODO: enhance positioning
             root.getChildren().remove(elapsed);
-            elapsed = new Text(WINDOW_WIDTH/2 - 30, 20,  "Time: " + (int)time);
-            elapsed.setFont(new Font(16));
-            elapsed.setFill(Color.RED);
-            elapsed.setStroke(Color.RED);
+            elapsed.setText("Time: " + (int)time);
+            elapsed.setTranslateX(WINDOW_WIDTH/2 - elapsed.getBoundsInParent().getWidth()/2);
             root.getChildren().add(elapsed);
             
             root.getChildren().remove(pointsField);
-            pointsField = new Text(WINDOW_WIDTH - 150, 20, "Points: " + (int)points);
-            pointsField.setFont(new Font(16));
-            pointsField.setFill(Color.RED);
-            pointsField.setStroke(Color.RED);
+            pointsField.setText("Points: " + (int)points);
             root.getChildren().add(pointsField);
             
             time += 1.0 / 60;
