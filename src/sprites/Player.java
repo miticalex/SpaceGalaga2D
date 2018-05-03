@@ -177,7 +177,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         }
         
         if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT 
-                ) 
+            || event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) 
                 && event.getEventType() == KeyEvent.KEY_RELEASED) {
             direction = Direction.STILL;
             setVelocity();
