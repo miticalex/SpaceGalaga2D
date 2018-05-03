@@ -41,6 +41,8 @@ public class SpaceGalaga2D extends Application {
     private static final double STARS_VELOCITY = 1;
     private static final int MIN_STARS = 3;
     
+    private static final int POINTS_FOR_ENEMY = 100;
+    
     public static int getWINDOW_WIDTH() {
         return WINDOW_WIDTH;
     }
@@ -69,8 +71,11 @@ public class SpaceGalaga2D extends Application {
     private List<Shot> shots;
     
     private double time = 0;
+    private int points = 0;
     private boolean theEnd = false;
+    
     private Text elapsed;
+    private Text pointsField;
     
     private void setBackground(Background background1){
         root.getChildren().remove(background);
@@ -228,6 +233,7 @@ public class SpaceGalaga2D extends Application {
                        (currentEnemy.getBoundsInParent())) {
                         shots.remove(currentShot);
                         enemies.remove(currentEnemy);
+                        points += POINTS_FOR_ENEMY;
                         break;
                     }
                 }
@@ -250,6 +256,13 @@ public class SpaceGalaga2D extends Application {
             elapsed.setFill(Color.RED);
             elapsed.setStroke(Color.RED);
             root.getChildren().add(elapsed);
+            
+            root.getChildren().remove(pointsField);
+            pointsField = new Text(WINDOW_WIDTH - 150, 20, "Points: " + (int)points);
+            pointsField.setFont(new Font(16));
+            pointsField.setFill(Color.RED);
+            pointsField.setStroke(Color.RED);
+            root.getChildren().add(pointsField);
             
             time += 1.0 / 60;
         }
