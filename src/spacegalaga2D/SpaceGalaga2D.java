@@ -273,6 +273,13 @@ public class SpaceGalaga2D extends Application {
         
         if (theEnd == false) {
             for (Enemy enemy : enemies) {
+                enemy.update();
+                if (enemy.isDead()){
+                    enemies.remove(enemy);
+                    continue;
+                } else if (enemy.isHit())
+                    continue;
+                
                 if (player.getBoundsInParent().intersects
                    (enemy.getBoundsInParent())) {
                     theEnd = true;
@@ -291,10 +298,11 @@ public class SpaceGalaga2D extends Application {
                 
                 // Check if shot has hit the enemy - happens when they intersect
                 for (Enemy currentEnemy : enemies) {
-                    if (currentShot.getBoundsInParent().intersects
-                       (currentEnemy.getBoundsInParent())) {
+                    if (!currentEnemy.isHit() 
+                            && currentShot.getBoundsInParent().intersects
+                                (currentEnemy.getBoundsInParent())) {
                         shots.remove(currentShot);
-                        enemies.remove(currentEnemy);
+                        currentEnemy.disappear();
                         points += POINTS_FOR_ENEMY;
                         break;
                     }

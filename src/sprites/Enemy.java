@@ -1,6 +1,8 @@
 package sprites;
 
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
@@ -19,6 +21,8 @@ public class Enemy extends Sprite {
     private static final int BODY_HEIGHT = 40;
     private static final int BODY_CENTRE_X = BODY_WIDTH/2;
     private static final int BODY_CENTRE_Y = BODY_HEIGHT/2;
+    
+    private static final int DISAPPEARANCE_DURATION = 2;
 
     public static int getBODY_WIDTH() {
         return BODY_WIDTH;
@@ -41,6 +45,18 @@ public class Enemy extends Sprite {
     private Ellipse lEye, rEye;
     private Circle lPupil, rPupil;
     
+    private boolean hit = false; 
+    private double timeToLive = 2.0;
+    private boolean dead = false;
+
+    public boolean isHit() {
+        return hit;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
     private void addBody(){
         body = new Rectangle(0, 0, BODY_WIDTH, BODY_HEIGHT);
         body.setArcHeight(ARC_DIAMETER);
@@ -119,7 +135,7 @@ public class Enemy extends Sprite {
         st.play();
     }
     
-    public void rotateWings(){
+    private void rotateWings(){
         // TODO: change the way how pivot is set....
         RotateTransition rotLE = new RotateTransition(Duration.seconds(2), lEar);
         RotateTransition rotRE = new RotateTransition(Duration.seconds(2), rEar);
@@ -151,9 +167,30 @@ public class Enemy extends Sprite {
         rotateWings();
     }
     
+    public void disappear(){
+        hit = true;
+        
+        RotateTransition rotate = new RotateTransition(
+                Duration.seconds(DISAPPEARANCE_DURATION), this);
+        rotate.setFromAngle(0);
+        rotate.setToAngle(720); //rotate 2 circles
+        rotate.play();
+        
+        FadeTransition fadeAway = new FadeTransition(
+                Duration.seconds(DISAPPEARANCE_DURATION), this);
+        fadeAway.setFromValue(1);
+        fadeAway.setToValue(0);
+        fadeAway.setInterpolator(Interpolator.LINEAR);
+        fadeAway.play();
+    }
+    
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (hit){
+            timeToLive-= 1./60;
+            if (timeToLive < 0)
+                dead = true;
+        }
     }
     
 }
