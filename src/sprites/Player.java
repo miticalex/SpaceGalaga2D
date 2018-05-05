@@ -32,6 +32,11 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         return BODY_HEIGHT + GUN_HEIGHT + GUN_STROKE_WIDTH/2;
     }
     
+    private static boolean rightArrowDown = false;
+    private static boolean leftArrowDown = false;
+    private static boolean upArrowDown = false;
+    private static boolean downArrowDown = false;
+    
     private static enum VerticalDirection {UP, DOWN, STILL}
     private static enum HorizontalDirection {LEFT, RIGHT, STILL}
     
@@ -163,19 +168,39 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     fireShot();
                     break;
                 case RIGHT:
-                    horizontalDirection = HorizontalDirection.RIGHT;
+                    rightArrowDown = true;
+                    if (leftArrowDown){
+                        horizontalDirection = HorizontalDirection.STILL;
+                    } else {
+                        horizontalDirection = HorizontalDirection.RIGHT;
+                    }
                     setVelocity();
                     break;
                 case LEFT:
-                    horizontalDirection = HorizontalDirection.LEFT;
+                    leftArrowDown = true;
+                    if (rightArrowDown){
+                        horizontalDirection = HorizontalDirection.STILL;
+                    } else {
+                        horizontalDirection = HorizontalDirection.LEFT;
+                    }
                     setVelocity();
                     break;
                 case UP:
-                    verticalDirection = VerticalDirection.UP;
+                    upArrowDown = true;
+                    if (downArrowDown){
+                        verticalDirection = VerticalDirection.STILL;
+                    } else {
+                        verticalDirection = VerticalDirection.UP;
+                    }
                     setVelocity();
                     break;
                 case DOWN:
-                    verticalDirection = VerticalDirection.DOWN;
+                    downArrowDown = true;
+                    if (upArrowDown){
+                        verticalDirection = verticalDirection.STILL;
+                    } else {
+                        verticalDirection = VerticalDirection.DOWN;
+                    }
                     setVelocity();
                     break;
                 case DIGIT1:
@@ -189,15 +214,58 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             }
         }
         
-        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) 
-                && event.getEventType() == KeyEvent.KEY_RELEASED) {
-            horizontalDirection = HorizontalDirection.STILL;
-            setVelocity();
+        if (event.getEventType() == KeyEvent.KEY_RELEASED){
+            switch (event.getCode()) {
+                case RIGHT:
+                    rightArrowDown = false;
+                    if (leftArrowDown){
+                        horizontalDirection = HorizontalDirection.LEFT;
+                    } else {
+                        horizontalDirection = HorizontalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                case LEFT:
+                    leftArrowDown = false;
+                    if (rightArrowDown){
+                        horizontalDirection = HorizontalDirection.RIGHT;
+                    } else {
+                        horizontalDirection = HorizontalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                case UP:
+                    upArrowDown = false;
+                    if (downArrowDown){
+                        verticalDirection = VerticalDirection.DOWN;
+                    } else {
+                        verticalDirection = VerticalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                case DOWN:
+                    downArrowDown = false;
+                    if (upArrowDown){
+                        verticalDirection = verticalDirection.UP;
+                    } else {
+                        verticalDirection = VerticalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                default:
+                    throw new AssertionError();
+            }
         }
-        if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) 
-                && event.getEventType() == KeyEvent.KEY_RELEASED) {
-            verticalDirection = VerticalDirection.STILL;
-            setVelocity();
-        }
+//        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) 
+//                && event.getEventType() == KeyEvent.KEY_RELEASED) {
+//            horizontalDirection = HorizontalDirection.STILL;
+//            setVelocity();
+//        }
+//        if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) 
+//                && event.getEventType() == KeyEvent.KEY_RELEASED) {
+//            
+//            verticalDirection = VerticalDirection.STILL;
+//            setVelocity();
+//        }
     }
 }
