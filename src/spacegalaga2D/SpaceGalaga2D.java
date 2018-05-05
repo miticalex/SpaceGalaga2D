@@ -352,7 +352,7 @@ public class SpaceGalaga2D extends Application {
                 }
             });
             
-            if (enemies.isEmpty()) {
+            if (enemies.isEmpty() && coins.isEmpty()) {
                 theEnd = true;
                 setTheEnd();
             } else {
