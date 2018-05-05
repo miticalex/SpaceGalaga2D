@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import shapes.Star;
 import sprites.Background;
+import sprites.Coin;
 import sprites.Enemy;
 import sprites.Player;
 import sprites.Shot;
@@ -62,6 +63,8 @@ public class SpaceGalaga2D extends Application {
     private Camera2D camera;
     private Background background;
     private List<Star> stars;
+    private Coin coin;
+    
 //    TODO: Consider setting a camera in the way below
 //    private static enum View {SCENE, PLAYER}; 
 //    private View view = View.SCENE;
@@ -240,6 +243,11 @@ public class SpaceGalaga2D extends Application {
         setTime();
         setPoints();
         
+        coin = new Coin();
+        coin.setTranslateX(600);
+        coin.setTranslateY(600);
+        root.getChildren().add(coin);
+                
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, false, SceneAntialiasing.BALANCED);
         scene.setOnKeyPressed(player);
         scene.setOnKeyReleased(player);
@@ -259,6 +267,7 @@ public class SpaceGalaga2D extends Application {
 
     public void update() {
         updateStars();
+        coin.update();
         
         camera.getChildren().clear();
         if (player.isPlayerCamera())

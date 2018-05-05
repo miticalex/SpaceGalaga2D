@@ -3,7 +3,7 @@ package sprites;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
+//import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -11,7 +11,7 @@ import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
+//import javafx.scene.shape.Rectangle;
 import spacegalaga2D.SpaceGalaga2D;
 
 public class Player extends Sprite implements EventHandler<KeyEvent> {
