@@ -22,6 +22,8 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static final int GUN_HEIGHT = 20;
     private static final int GUN_STROKE_WIDTH = 10;
     
+    private static final double VELOCITY = 10;
+    
     public static int getWidth() {
         return BODY_WIDTH;
     }
@@ -30,15 +32,20 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         return BODY_HEIGHT + GUN_HEIGHT + GUN_STROKE_WIDTH/2;
     }
     
-    private static enum Direction {LEFT, RIGHT, UP, DOWN, STILL}
-    private static final double VELOCITY = 10;
+    private static enum VerticalDirection {UP, DOWN, STILL}
+    private static enum HorizontalDirection {LEFT, RIGHT, STILL}
     
-    private Direction direction = Direction.STILL;
+    private HorizontalDirection horizontalDirection = HorizontalDirection.STILL;
+    private VerticalDirection verticalDirection = VerticalDirection.STILL;
     private double velocity = 0;
     private double verticalVelocity = 0;
 
-    public Direction getDirection() {
-        return direction;
+    public VerticalDirection getVerticalDirection() {
+        return verticalDirection;
+    }
+    
+    public HorizontalDirection getHorizontalDirection() {
+        return horizontalDirection;
     }
 
     public double getVelocity() {
@@ -93,13 +100,21 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     }
     
     private void setVelocity() {
-        switch (direction) {
+        switch (horizontalDirection) {
             case LEFT:
                 velocity = - VELOCITY;
                 break;
             case RIGHT:
                 velocity = VELOCITY;
                 break;
+            case STILL:
+                velocity = 0;
+                break;
+            default:
+                throw new AssertionError();
+        }
+    
+        switch (verticalDirection) {
             case UP:
                 verticalVelocity = - VELOCITY;
                 break;
@@ -107,13 +122,11 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                 verticalVelocity = VELOCITY;
                 break;
             case STILL:
-                velocity = 0;
                 verticalVelocity = 0;
                 break;
             default:
                 throw new AssertionError();
         }
-    
     }
     
     private void fireShot() {
@@ -150,19 +163,19 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     fireShot();
                     break;
                 case RIGHT:
-                    direction = Direction.RIGHT;
+                    horizontalDirection = HorizontalDirection.RIGHT;
                     setVelocity();
                     break;
                 case LEFT:
-                    direction = Direction.LEFT;
+                    horizontalDirection = HorizontalDirection.LEFT;
                     setVelocity();
                     break;
                 case UP:
-                    direction = Direction.UP;
+                    verticalDirection = VerticalDirection.UP;
                     setVelocity();
                     break;
                 case DOWN:
-                    direction = Direction.DOWN;
+                    verticalDirection = VerticalDirection.DOWN;
                     setVelocity();
                     break;
                 case DIGIT1:
@@ -176,10 +189,14 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             }
         }
         
-        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT 
-            || event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) 
+        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) 
                 && event.getEventType() == KeyEvent.KEY_RELEASED) {
-            direction = Direction.STILL;
+            horizontalDirection = HorizontalDirection.STILL;
+            setVelocity();
+        }
+        if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) 
+                && event.getEventType() == KeyEvent.KEY_RELEASED) {
+            verticalDirection = VerticalDirection.STILL;
             setVelocity();
         }
     }

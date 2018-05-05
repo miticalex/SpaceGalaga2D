@@ -51,7 +51,7 @@ public class Star extends Polyline{
         this.setFill(Color.YELLOW);
     }
     
-    public void setTranslate(double x, double y){
+    public final void setTranslate(double x, double y){
         this.setTranslateX(x);
         this.setTranslateY(y);
     }
