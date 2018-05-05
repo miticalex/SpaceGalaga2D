@@ -36,13 +36,7 @@ public class Star extends Polyline{
         return innerR;
     }
     
-    public Star(){
-        Random random = new Random();
-        
-        numPoints = MIN_POINTS + random.nextInt(MAX_POINTS - MIN_POINTS);
-        outerR = MIN_OUTER_R + random.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
-        innerR = outerR * (0.16 + random.nextDouble() * 0.4);
-        
+    private void drawStar(int numPoints, double outerR, double innerR){
         for (int i = 0; i < numPoints; i++) {
             double x0 = Math.cos(i*Math.PI*2/numPoints) * outerR;
             double y0 = Math.sin(i*Math.PI*2/numPoints) * outerR;
@@ -55,12 +49,58 @@ public class Star extends Polyline{
         
         this.setStroke(Color.BLACK);
         this.setFill(Color.YELLOW);
+    }
+    
+    public void setTranslate(double x, double y){
+        this.setTranslateX(x);
+        this.setTranslateY(y);
+    }
+    
+    public Star(){
+        Random random = new Random();
+        
+        numPoints = MIN_POINTS + random.nextInt(MAX_POINTS - MIN_POINTS);
+        outerR = MIN_OUTER_R + random.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
+        innerR = outerR * (0.16 + random.nextDouble() * 0.4);
+        
+        drawStar(numPoints, outerR, innerR);
         this.setRotate(90. * random.nextDouble());
     }
     
     public Star(double x, double y){
         this();
-        this.setTranslateX(x);
-        this.setTranslateY(y);
+        setTranslate(x, y);
+    }
+    
+    public Star(int numPoints1){
+        Random random = new Random();
+        
+        numPoints = numPoints1;
+        outerR = MIN_OUTER_R + random.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
+        innerR = outerR * (0.16 + random.nextDouble() * 0.4);
+        
+        drawStar(numPoints, outerR, innerR);
+    }
+    
+    public Star(int numPoints1, double outerR1, double innerR1){
+        numPoints = numPoints1;
+        outerR = outerR1;
+        innerR = innerR1;
+        
+        drawStar(numPoints, outerR, innerR);
+    }
+    
+    public Star(int numPoints, double outerR, double innerR, double rotationAngle){
+        this(numPoints, outerR, innerR);
+        this.setRotate(rotationAngle);
+    }
+    
+    public Star(double x, double y, int numPoints, double outerR, double innerR){
+        this(numPoints, outerR, innerR);
+        this.setTranslate(x, y);
+    }
+    public Star(double x, double y, int numPoints, double outerR, double innerR, double rotationAngle){
+        this(x, y, numPoints, outerR, innerR);
+        this.setRotate(rotationAngle);
     }
 }
