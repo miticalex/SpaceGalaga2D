@@ -23,7 +23,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import shapes.Star;
 import sprites.Background;
-import sprites.Coin;
 import sprites.Enemy;
 import sprites.FallingCoin;
 import sprites.Player;
@@ -57,6 +56,10 @@ public class SpaceGalaga2D extends Application {
     private static final int MIN_STARS = 3;
     
     private static final int POINTS_FOR_ENEMY = 100;
+    private static final double COIN_MIN_INIT_VELOCITY_Y = 25.0;
+    private static final double COIN_MAX_INIT_VELOCITY_Y = 100.0;
+    private static final double COIN_MIN_ANGLE = -Math.PI/6; //-15 degrees
+    private static final double COIN_MAX_ANGLE = Math.PI/6; //15 degrees
     
     private static final int ENEMIES_IN_A_ROW = 6;
     private static final int ENEMIES_IN_A_COLUMN = 3;
@@ -70,7 +73,6 @@ public class SpaceGalaga2D extends Application {
     private Camera2D camera;
     private Background background;
     private List<Star> stars;
-    private FallingCoin coin;
     
 //    TODO: Consider setting a camera in the way below
 //    private static enum View {SCENE, PLAYER}; 
@@ -79,6 +81,7 @@ public class SpaceGalaga2D extends Application {
     private List<Enemy> enemies;
     private Player player;
     private List<Shot> shots;
+    private List<FallingCoin> coins;
     
     private double time = 0;
     private int points = 0;
@@ -244,17 +247,13 @@ public class SpaceGalaga2D extends Application {
         setStars();
         setEnemies();
         setPlayer();
+        coins = new LinkedList<>();
         
         root.getChildren().add(camera);
         
         setTime();
         setPoints();
         
-        coin = new FallingCoin(50, -200);
-        coin.setTranslateX(600);
-        coin.setTranslateY(200);
-        root.getChildren().add(coin);
-                
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, false, SceneAntialiasing.BALANCED);
         scene.setOnKeyPressed(player);
         scene.setOnKeyReleased(player);
@@ -274,7 +273,6 @@ public class SpaceGalaga2D extends Application {
 
     public void update() {
         updateStars();
-        coin.update();
         
         camera.getChildren().clear();
         if (player.isPlayerCamera())
@@ -291,6 +289,22 @@ public class SpaceGalaga2D extends Application {
             for (Enemy enemy : enemies) {
                 enemy.update();
                 if (enemy.isDead()){
+                    // creating coin
+                    double coinInitVelocityY = -COIN_MIN_INIT_VELOCITY_Y 
+                        - (new Random()).nextDouble()*
+                            (COIN_MAX_INIT_VELOCITY_Y - COIN_MIN_INIT_VELOCITY_Y);
+                    
+                    double coinInitVelocityX = coinInitVelocityY * 
+                        Math.tan(COIN_MIN_ANGLE + 
+                            (new Random()).nextDouble()*(COIN_MAX_ANGLE-COIN_MIN_ANGLE));
+                    
+                    FallingCoin coin = new FallingCoin(
+                            coinInitVelocityX, coinInitVelocityY);
+                    coin.setTranslateX(enemy.getBoundsInParent().getMinX() + 
+                            (new Random()).nextDouble()*(enemy.getBoundsInParent().getWidth() - coin.getWIDTH()));
+                    coin.setTranslateY(enemy.getTranslateY());
+                    coins.add(coin);
+                    
                     enemies.remove(enemy);
                     continue;
                 } else if (enemy.isHit())
@@ -330,7 +344,9 @@ public class SpaceGalaga2D extends Application {
                 setTheEnd();
             } else {
                 camera.getChildren().addAll(shots);
+                camera.getChildren().addAll(coins);
                 shots.forEach(shot -> shot.update());
+                coins.forEach(coin -> coin.update());
                 player.setShots(shots);
             }
             
