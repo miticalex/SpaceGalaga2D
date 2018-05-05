@@ -25,6 +25,7 @@ import shapes.Star;
 import sprites.Background;
 import sprites.Coin;
 import sprites.Enemy;
+import sprites.FallingCoin;
 import sprites.Player;
 import sprites.Shot;
 
@@ -33,6 +34,12 @@ import sprites.Shot;
  * @author AM
  */
 public class SpaceGalaga2D extends Application {
+    public static final double G = 100;
+
+    public static double getG() {
+        return G;
+    }
+
     private static final String TITLE = "Space Galaga 2D - AM";
     
     private static final int WINDOW_WIDTH = 1200;
@@ -63,7 +70,7 @@ public class SpaceGalaga2D extends Application {
     private Camera2D camera;
     private Background background;
     private List<Star> stars;
-    private Coin coin;
+    private FallingCoin coin;
     
 //    TODO: Consider setting a camera in the way below
 //    private static enum View {SCENE, PLAYER}; 
@@ -243,9 +250,9 @@ public class SpaceGalaga2D extends Application {
         setTime();
         setPoints();
         
-        coin = new Coin();
+        coin = new FallingCoin(50, -200);
         coin.setTranslateX(600);
-        coin.setTranslateY(600);
+        coin.setTranslateY(200);
         root.getChildren().add(coin);
                 
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, false, SceneAntialiasing.BALANCED);

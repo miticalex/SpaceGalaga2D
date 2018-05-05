@@ -15,6 +15,14 @@ public class Coin extends Sprite{
     private static final int WIDTH = 45;
     private static final int HEIGHT = 50;
     private static final int RIM_WIDTH = 2;
+
+    public static int getWIDTH() {
+        return WIDTH;
+    }
+
+    public static int getHEIGHT() {
+        return HEIGHT;
+    }
     
     private Ellipse rim;
     private Ellipse inside;
