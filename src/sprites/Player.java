@@ -256,16 +256,5 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     throw new AssertionError();
             }
         }
-//        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) 
-//                && event.getEventType() == KeyEvent.KEY_RELEASED) {
-//            horizontalDirection = HorizontalDirection.STILL;
-//            setVelocity();
-//        }
-//        if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) 
-//                && event.getEventType() == KeyEvent.KEY_RELEASED) {
-//            
-//            verticalDirection = VerticalDirection.STILL;
-//            setVelocity();
-//        }
     }
 }

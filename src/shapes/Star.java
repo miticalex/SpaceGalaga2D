@@ -3,13 +3,12 @@ package shapes;
 import java.util.Random;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
 
 /**
  *
  * @author AM
  */
-public class Star extends Polyline{
+public class Star extends Polygon{
     private static final int MIN_POINTS = 4;
     private static final int MAX_POINTS = 8;
     
