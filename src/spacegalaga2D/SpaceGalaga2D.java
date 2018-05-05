@@ -56,6 +56,7 @@ public class SpaceGalaga2D extends Application {
     private static final int MIN_STARS = 3;
     
     private static final int POINTS_FOR_ENEMY = 100;
+    private static final int POINTS_FOR_COIN = 50;
     private static final double COIN_MIN_INIT_VELOCITY_Y = 25.0;
     private static final double COIN_MAX_INIT_VELOCITY_Y = 100.0;
     private static final double COIN_MIN_ANGLE = -Math.PI/6; //-15 degrees
@@ -338,6 +339,18 @@ public class SpaceGalaga2D extends Application {
                     }
                 }
             }
+            
+            coins.forEach(coin -> {
+                if (coin.getBoundsInParent().getMinY() > WINDOW_HEIGHT){
+                    coins.remove(coin);
+                    return; //continue equivalent
+                }
+                if (coin.getBoundsInParent().intersects(
+                    (player.getBoundsInParent()))){
+                    points += POINTS_FOR_COIN;
+                    coins.remove(coin);
+                }
+            });
             
             if (enemies.isEmpty()) {
                 theEnd = true;
