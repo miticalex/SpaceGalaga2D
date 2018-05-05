@@ -70,6 +70,8 @@ public class SpaceGalaga2D extends Application {
     
     private static final int LABELS_POSITION_Y = 20;
     
+    private Random random =  new Random();
+    
     private Group root;
     private Camera2D camera;
     private Background background;
@@ -122,8 +124,8 @@ public class SpaceGalaga2D extends Application {
         stars = new LinkedList<>();
         
         for (int i = 0; i < NUM_STARS; i++) {
-            Star star = new Star(-WINDOW_WIDTH/2 + 10 + (new Random()).nextInt(2*WINDOW_WIDTH - 20),
-                                    10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));            
+            Star star = new Star(-WINDOW_WIDTH/2 + 10 + random.nextInt(2*WINDOW_WIDTH - 20),
+                                    10 + random.nextInt(WINDOW_HEIGHT - 20));            
             stars.add(star);
             camera.getChildren().add(star);
         }
@@ -203,9 +205,9 @@ public class SpaceGalaga2D extends Application {
     // UPDATE METHODS SECTION
     
     private void rotateStars(){
-        if (stars.size()<NUM_STARS && (new Random()).nextDouble()<0.005){
+        if (stars.size()<NUM_STARS && random.nextDouble()<0.005){
             Star star = new Star(1.5*WINDOW_WIDTH,
-                                10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
+                                10 + random.nextInt(WINDOW_HEIGHT - 20));
             stars.add(star);
             camera.getChildren().add(star);
         }
@@ -233,7 +235,7 @@ public class SpaceGalaga2D extends Application {
         for (int i = starsOnCamera; i < MIN_STARS; i++) {
             Star newStar = new Star();
             newStar.setTranslateX(-camera.getTranslateX() + WINDOW_WIDTH + 2*newStar.getOuterR());
-            newStar.setTranslateY(10 + (new Random()).nextInt(WINDOW_HEIGHT - 20));
+            newStar.setTranslateY(10 + random.nextInt(WINDOW_HEIGHT - 20));
 
             stars.add(newStar);
         }
@@ -292,17 +294,17 @@ public class SpaceGalaga2D extends Application {
                 if (enemy.isDead()){
                     // creating coin
                     double coinInitVelocityY = -COIN_MIN_INIT_VELOCITY_Y 
-                        - (new Random()).nextDouble()*
+                        - random.nextDouble()*
                             (COIN_MAX_INIT_VELOCITY_Y - COIN_MIN_INIT_VELOCITY_Y);
                     
                     double coinInitVelocityX = coinInitVelocityY * 
                         Math.tan(COIN_MIN_ANGLE + 
-                            (new Random()).nextDouble()*(COIN_MAX_ANGLE-COIN_MIN_ANGLE));
+                            random.nextDouble()*(COIN_MAX_ANGLE-COIN_MIN_ANGLE));
                     
                     FallingCoin coin = new FallingCoin(
                             coinInitVelocityX, coinInitVelocityY);
                     coin.setTranslateX(enemy.getBoundsInParent().getMinX() + 
-                            (new Random()).nextDouble()*(enemy.getBoundsInParent().getWidth() - coin.getWIDTH()));
+                            random.nextDouble()*(enemy.getBoundsInParent().getWidth() - coin.getWIDTH()));
                     coin.setTranslateY(enemy.getTranslateY());
                     coins.add(coin);
                     

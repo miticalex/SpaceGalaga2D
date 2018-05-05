@@ -14,6 +14,8 @@ public class Star extends Polygon{
     
     private static final double MIN_OUTER_R = 10;
     private static final double MAX_OUTER_R = 20;
+    
+    private static final Random random = new Random();
 
     public static double getMAX_OUTER_R() {
         return MAX_OUTER_R;
@@ -56,8 +58,6 @@ public class Star extends Polygon{
     }
     
     public Star(){
-        Random random = new Random();
-        
         numPoints = MIN_POINTS + random.nextInt(MAX_POINTS - MIN_POINTS);
         outerR = MIN_OUTER_R + random.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
         innerR = outerR * (0.16 + random.nextDouble() * 0.4);
@@ -72,8 +72,6 @@ public class Star extends Polygon{
     }
     
     public Star(int numPoints1){
-        Random random = new Random();
-        
         numPoints = numPoints1;
         outerR = MIN_OUTER_R + random.nextDouble() * (MAX_OUTER_R - MIN_OUTER_R);
         innerR = outerR * (0.16 + random.nextDouble() * 0.4);
