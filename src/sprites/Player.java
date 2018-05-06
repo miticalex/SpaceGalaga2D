@@ -3,9 +3,12 @@ package sprites;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
+//import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ClosePath;
@@ -20,39 +23,62 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     private static final int GUN_WIDTH = 20;
     private static final int GUN_HEIGHT = 20;
+    private static final int GUN_STROKE_WIDTH = 10;
     
-    public static int getWIDTH() {
+    private static final int JET_PIPE_WIDTH = 20;
+    private static final int JET_PIPE_HEIGHT = 20;
+    private static final int JET_INTENSITY = 30;
+    
+    private static final double VELOCITY = 10;
+    
+    public static int getWidth() {
         return BODY_WIDTH;
     }
 
-    public static int getHEIGHT() {
-        return BODY_HEIGHT + GUN_HEIGHT;
+    public static int getHeight() {
+        return BODY_HEIGHT + GUN_HEIGHT + GUN_STROKE_WIDTH/2;
     }
     
-    private static enum Direction {LEFT, RIGHT, STILL}
-    private static final double VELOCITY = 10;
+    private static boolean rightArrowDown = false;
+    private static boolean leftArrowDown = false;
+    private static boolean upArrowDown = false;
+    private static boolean downArrowDown = false;
     
-    private Direction direction = Direction.STILL;
+    private static enum VerticalDirection {UP, DOWN, STILL}
+    private static enum HorizontalDirection {LEFT, RIGHT, STILL}
+    
+    private HorizontalDirection horizontalDirection = HorizontalDirection.STILL;
+    private VerticalDirection verticalDirection = VerticalDirection.STILL;
     private double velocity = 0;
+    private double verticalVelocity = 0;
 
-    public Direction getDirection() {
-        return direction;
+    public VerticalDirection getVerticalDirection() {
+        return verticalDirection;
+    }
+    
+    public HorizontalDirection getHorizontalDirection() {
+        return horizontalDirection;
     }
 
     public double getVelocity() {
         return velocity;
     }
-     
+
+    public double getVerticalVelocity() {
+        return verticalVelocity;
+    }
+    
     private boolean playerCamera = false;
     public boolean isPlayerCamera() {
         return playerCamera;
     }
     
-    
 //    private Rectangle body;
     private Path body;
 //    private Rectangle gun;    
     private Arc gun;
+    private Rectangle leftJetPipe, rightJetPipe;
+    private JetStream leftJet, rightJet;
     
     private List<Shot> shots = new LinkedList<>();
 
@@ -82,13 +108,34 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         gun = new Arc(0, - BODY_HEIGHT, GUN_WIDTH/2, GUN_HEIGHT, 0, 180);
         gun.setFill(Color.BLACK);
         gun.setStroke(Color.SKYBLUE);
-        gun.setStrokeWidth(10);      
+        gun.setStrokeWidth(GUN_STROKE_WIDTH);
         
-        this.getChildren().addAll(body, gun);
+        LinearGradient pipesColor = new LinearGradient(0, 0, 0.5, 0, true, 
+                CycleMethod.REFLECT, 
+                new Stop[] {
+                    new Stop(0.0, Color.DARKRED),
+                    new Stop(0.5, Color.GOLD)// LIGHTSALMON
+                });
+        
+        leftJetPipe = new Rectangle(-BODY_WIDTH*0.55-JET_PIPE_WIDTH, -JET_PIPE_HEIGHT, 
+                                    JET_PIPE_WIDTH, JET_PIPE_HEIGHT);
+        leftJetPipe.setStroke(null);
+        leftJetPipe.setFill(pipesColor);
+        rightJetPipe = new Rectangle(BODY_WIDTH*0.55, -JET_PIPE_HEIGHT, 
+                                    JET_PIPE_WIDTH, JET_PIPE_HEIGHT);
+        rightJetPipe.setStroke(null);
+        rightJetPipe.setFill(pipesColor);
+        
+        leftJet = new JetStream(JET_PIPE_WIDTH, JET_INTENSITY);
+        leftJet.setTranslateX(-BODY_WIDTH*0.55-20);
+        rightJet = new JetStream(JET_PIPE_WIDTH, JET_INTENSITY);
+        rightJet.setTranslateX(BODY_WIDTH*0.55);
+        
+        this.getChildren().addAll(body, gun, leftJetPipe, rightJetPipe, leftJet, rightJet);
     }
     
     private void setVelocity() {
-        switch (direction) {
+        switch (horizontalDirection) {
             case LEFT:
                 velocity = - VELOCITY;
                 break;
@@ -102,6 +149,19 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                 throw new AssertionError();
         }
     
+        switch (verticalDirection) {
+            case UP:
+                verticalVelocity = - VELOCITY;
+                break;
+            case DOWN:
+                verticalVelocity = VELOCITY;
+                break;
+            case STILL:
+                verticalVelocity = 0;
+                break;
+            default:
+                throw new AssertionError();
+        }
     }
     
     private void fireShot() {
@@ -120,6 +180,17 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         } else {
             setTranslateX(getTranslateX() + velocity);
         }
+        
+        if (getTranslateY() + verticalVelocity < getHeight() + 5) {
+            setTranslateY(getHeight() + 5);
+        } else if (getTranslateY() + verticalVelocity > SpaceGalaga2D.getWINDOW_HEIGHT() - 5) {
+            setTranslateY(SpaceGalaga2D.getWINDOW_HEIGHT() - 5);
+        } else {
+            setTranslateY(getTranslateY() + verticalVelocity);
+        }
+        
+        leftJet.update();
+        rightJet.update();
     }
     
     @Override
@@ -130,11 +201,39 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     fireShot();
                     break;
                 case RIGHT:
-                    direction = Direction.RIGHT;
+                    rightArrowDown = true;
+                    if (leftArrowDown){
+                        horizontalDirection = HorizontalDirection.STILL;
+                    } else {
+                        horizontalDirection = HorizontalDirection.RIGHT;
+                    }
                     setVelocity();
                     break;
                 case LEFT:
-                    direction = Direction.LEFT;
+                    leftArrowDown = true;
+                    if (rightArrowDown){
+                        horizontalDirection = HorizontalDirection.STILL;
+                    } else {
+                        horizontalDirection = HorizontalDirection.LEFT;
+                    }
+                    setVelocity();
+                    break;
+                case UP:
+                    upArrowDown = true;
+                    if (downArrowDown){
+                        verticalDirection = VerticalDirection.STILL;
+                    } else {
+                        verticalDirection = VerticalDirection.UP;
+                    }
+                    setVelocity();
+                    break;
+                case DOWN:
+                    downArrowDown = true;
+                    if (upArrowDown){
+                        verticalDirection = verticalDirection.STILL;
+                    } else {
+                        verticalDirection = VerticalDirection.DOWN;
+                    }
                     setVelocity();
                     break;
                 case DIGIT1:
@@ -148,9 +247,47 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             }
         }
         
-        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) && event.getEventType() == KeyEvent.KEY_RELEASED) {
-            direction = Direction.STILL;
-            setVelocity();
+        if (event.getEventType() == KeyEvent.KEY_RELEASED){
+            switch (event.getCode()) {
+                case RIGHT:
+                    rightArrowDown = false;
+                    if (leftArrowDown){
+                        horizontalDirection = HorizontalDirection.LEFT;
+                    } else {
+                        horizontalDirection = HorizontalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                case LEFT:
+                    leftArrowDown = false;
+                    if (rightArrowDown){
+                        horizontalDirection = HorizontalDirection.RIGHT;
+                    } else {
+                        horizontalDirection = HorizontalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                case UP:
+                    upArrowDown = false;
+                    if (downArrowDown){
+                        verticalDirection = VerticalDirection.DOWN;
+                    } else {
+                        verticalDirection = VerticalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                case DOWN:
+                    downArrowDown = false;
+                    if (upArrowDown){
+                        verticalDirection = verticalDirection.UP;
+                    } else {
+                        verticalDirection = VerticalDirection.STILL;
+                    }
+                    setVelocity();
+                    break;
+                default:
+                    throw new AssertionError();
+            }
         }
     }
 }
