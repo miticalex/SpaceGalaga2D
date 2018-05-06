@@ -6,12 +6,15 @@ import javafx.event.EventHandler;
 //import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-//import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Rectangle;
 import spacegalaga2D.SpaceGalaga2D;
 
 public class Player extends Sprite implements EventHandler<KeyEvent> {
@@ -21,6 +24,10 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static final int GUN_WIDTH = 20;
     private static final int GUN_HEIGHT = 20;
     private static final int GUN_STROKE_WIDTH = 10;
+    
+    private static final int JET_PIPE_WIDTH = 20;
+    private static final int JET_PIPE_HEIGHT = 20;
+    private static final int JET_INTENSITY = 30;
     
     private static final double VELOCITY = 10;
     
@@ -70,6 +77,8 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     private Path body;
 //    private Rectangle gun;    
     private Arc gun;
+    private Rectangle leftJetPipe, rightJetPipe;
+    private JetStream leftJet, rightJet;
     
     private List<Shot> shots = new LinkedList<>();
 
@@ -99,9 +108,30 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         gun = new Arc(0, - BODY_HEIGHT, GUN_WIDTH/2, GUN_HEIGHT, 0, 180);
         gun.setFill(Color.BLACK);
         gun.setStroke(Color.SKYBLUE);
-        gun.setStrokeWidth(GUN_STROKE_WIDTH);      
+        gun.setStrokeWidth(GUN_STROKE_WIDTH);
         
-        this.getChildren().addAll(body, gun);
+        LinearGradient pipesColor = new LinearGradient(0, 0, 0.5, 0, true, 
+                CycleMethod.REFLECT, 
+                new Stop[] {
+                    new Stop(0.0, Color.DARKRED),
+                    new Stop(0.5, Color.GOLD)// LIGHTSALMON
+                });
+        
+        leftJetPipe = new Rectangle(-BODY_WIDTH*0.55-JET_PIPE_WIDTH, -JET_PIPE_HEIGHT, 
+                                    JET_PIPE_WIDTH, JET_PIPE_HEIGHT);
+        leftJetPipe.setStroke(null);
+        leftJetPipe.setFill(pipesColor);
+        rightJetPipe = new Rectangle(BODY_WIDTH*0.55, -JET_PIPE_HEIGHT, 
+                                    JET_PIPE_WIDTH, JET_PIPE_HEIGHT);
+        rightJetPipe.setStroke(null);
+        rightJetPipe.setFill(pipesColor);
+        
+        leftJet = new JetStream(JET_PIPE_WIDTH, JET_INTENSITY);
+        leftJet.setTranslateX(-BODY_WIDTH*0.55-20);
+        rightJet = new JetStream(JET_PIPE_WIDTH, JET_INTENSITY);
+        rightJet.setTranslateX(BODY_WIDTH*0.55);
+        
+        this.getChildren().addAll(body, gun, leftJetPipe, rightJetPipe, leftJet, rightJet);
     }
     
     private void setVelocity() {
@@ -158,6 +188,9 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         } else {
             setTranslateY(getTranslateY() + verticalVelocity);
         }
+        
+        leftJet.update();
+        rightJet.update();
     }
     
     @Override
