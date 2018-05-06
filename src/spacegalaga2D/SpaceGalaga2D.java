@@ -342,7 +342,7 @@ public class SpaceGalaga2D extends Application {
         }
         
         path.getPoints().addAll(xEnd, yEnd);
-        path.getPoints().addAll(xEnd, yEnd+100);
+        path.getPoints().addAll(xEnd, WINDOW_HEIGHT + 100.0);
         //path.getPoints().addAll(xEnd+100, k*(xEnd+100));
         
         PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, arrow);
