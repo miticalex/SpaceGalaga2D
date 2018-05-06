@@ -167,6 +167,11 @@ public class Enemy extends Sprite {
         rotateWings();
     }
     
+    public Arrow fireArrow(){
+        return new Arrow(this.getTranslateX() + BODY_WIDTH/2, 
+                this.getTranslateY() + BODY_HEIGHT);
+    }
+    
     public void disappear(){
         hit = true;
         

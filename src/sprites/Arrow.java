@@ -16,18 +16,29 @@ public class Arrow extends Sprite{
     private Polyline head;
     
     public Arrow(){
+//        stem = new Line(0.0, 0.0, 
+//                        0.0, ARROW_LENGTH);
         stem = new Line(0.0, 0.0, 
-                        0.0, ARROW_LENGTH);
+                        ARROW_LENGTH, 0.0);
         stem.setStroke(Color.SANDYBROWN);
         stem.setStrokeWidth(ARROW_WIDTH);
         
-        head = new Polyline(-ARROW_LENGTH/5, 0.8*ARROW_LENGTH, 
-                            0.0, ARROW_LENGTH, 
-                            ARROW_LENGTH/5, 0.8*ARROW_LENGTH);
-        head.setStroke(Color.ORANGERED);
+//        head = new Polyline(-ARROW_LENGTH/5, 0.8*ARROW_LENGTH, 
+//                            0.0, ARROW_LENGTH, 
+//                            ARROW_LENGTH/5, 0.8*ARROW_LENGTH);
+        head = new Polyline(0.8*ARROW_LENGTH, -ARROW_LENGTH/5, 
+                            ARROW_LENGTH, 0.0, 
+                            0.8*ARROW_LENGTH, ARROW_LENGTH/5);
+        head.setStroke(Color.RED);
         head.setStrokeWidth(ARROW_WIDTH);
         
         this.getChildren().addAll(stem, head);
+    }
+    
+    public Arrow(double x, double y){
+        this();
+        this.setTranslateX(x);
+        this.setTranslateY(y);
     }
 
     @Override
