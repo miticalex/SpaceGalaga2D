@@ -473,6 +473,10 @@ public class SpaceGalaga2D extends Application {
             }
             
             arrows.forEach(arrow -> {
+                if (arrow.getBoundsInParent().getMinY() > WINDOW_HEIGHT){
+                    arrows.remove(arrow);
+                    return; //continue equivalent
+                }
                 if (arrow.getBoundsInParent().intersects(player.getBoundsInParent())){
                     setTheEnd();
                 }
