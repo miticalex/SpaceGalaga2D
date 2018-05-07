@@ -498,9 +498,9 @@ public class SpaceGalaga2D extends Application {
             elapsed.setTranslateX(WINDOW_WIDTH/2 - elapsed.getBoundsInParent().getWidth()/2);
             root.getChildren().add(elapsed);
             
-            root.getChildren().remove(pointsField);
+            //root.getChildren().remove(pointsField);
             pointsField.setText("Points: " + (int)points);
-            root.getChildren().add(pointsField);
+            //root.getChildren().add(pointsField);
             
             time += 1.0 / 60;
         }
