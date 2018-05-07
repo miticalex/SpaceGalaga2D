@@ -395,8 +395,8 @@ public class SpaceGalaga2D extends Application {
             camera.setTranslateX(0);
 
         camera.getChildren().addAll(stars);
-        camera.getChildren().add(player);
         camera.getChildren().addAll(enemies);
+        camera.getChildren().add(player);
         player.update();
         
         if (theEnd == false) {
