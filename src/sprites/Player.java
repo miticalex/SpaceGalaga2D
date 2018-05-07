@@ -27,9 +27,11 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     private static final int JET_PIPE_WIDTH = 20;
     private static final int JET_PIPE_HEIGHT = 20;
-    private static final int JET_INTENSITY = 30;
+    private static final int JET_INTENSITY = 60;
     
-    private static final double VELOCITY = 10;
+    private static final double ACCELERATION = 20;
+    private static final double MAX_VELOCITY = 20;
+    private static final double FRICTION = 5;
     
     public static int getWidth() {
         return BODY_WIDTH;
@@ -44,24 +46,14 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static boolean upArrowDown = false;
     private static boolean downArrowDown = false;
     
-    private static enum VerticalDirection {UP, DOWN, STILL}
-    private static enum HorizontalDirection {LEFT, RIGHT, STILL}
+    private double horizontalAcceleration = 0;
+    private double verticalAcceleration = 0;
     
-    private HorizontalDirection horizontalDirection = HorizontalDirection.STILL;
-    private VerticalDirection verticalDirection = VerticalDirection.STILL;
-    private double velocity = 0;
+    private double horizontalVelocity = 0;
     private double verticalVelocity = 0;
 
-    public VerticalDirection getVerticalDirection() {
-        return verticalDirection;
-    }
-    
-    public HorizontalDirection getHorizontalDirection() {
-        return horizontalDirection;
-    }
-
-    public double getVelocity() {
-        return velocity;
+    public double getHorizontalVelocity() {
+        return horizontalVelocity;
     }
 
     public double getVerticalVelocity() {
@@ -114,7 +106,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                 CycleMethod.REFLECT, 
                 new Stop[] {
                     new Stop(0.0, Color.DARKRED),
-                    new Stop(0.5, Color.GOLD)// LIGHTSALMON
+                    new Stop(0.8, Color.GOLD)// LIGHTSALMON
                 });
         
         leftJetPipe = new Rectangle(-BODY_WIDTH*0.55-JET_PIPE_WIDTH, -JET_PIPE_HEIGHT, 
@@ -135,32 +127,85 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     }
     
     private void setVelocity() {
-        switch (horizontalDirection) {
-            case LEFT:
-                velocity = - VELOCITY;
-                break;
-            case RIGHT:
-                velocity = VELOCITY;
-                break;
-            case STILL:
-                velocity = 0;
-                break;
-            default:
-                throw new AssertionError();
+        double dt = 1/60.0;
+        
+        // SETTING HORIZONTAL VELOCITY
+        if (horizontalAcceleration == 0){
+            if (horizontalVelocity > 0.1)
+                horizontalVelocity -= dt*FRICTION;
+            else if (horizontalVelocity < -0.1)
+                horizontalVelocity += dt*FRICTION;
+            else // (if horizontalVelocity ~=0)
+                horizontalVelocity = 0;
+        } 
+        else if (horizontalAcceleration > 0){
+            if (horizontalVelocity >=0)
+                horizontalVelocity += dt*(horizontalAcceleration-FRICTION);
+            else // (if horizontalVelocity < 0)
+                horizontalVelocity += dt*(horizontalAcceleration+FRICTION);
         }
-    
-        switch (verticalDirection) {
-            case UP:
-                verticalVelocity = - VELOCITY;
-                break;
-            case DOWN:
-                verticalVelocity = VELOCITY;
-                break;
-            case STILL:
+        else { // (if horizontalAcceleration < 0)
+            if (horizontalVelocity <=0)
+                horizontalVelocity += dt*(horizontalAcceleration+FRICTION);
+            else // (if horizontalVelocity > 0)
+                horizontalVelocity += dt*(horizontalAcceleration-FRICTION);
+        }
+        
+        if (horizontalVelocity < -MAX_VELOCITY)
+            horizontalVelocity = -MAX_VELOCITY;
+        else if (horizontalVelocity > MAX_VELOCITY)
+            horizontalVelocity = MAX_VELOCITY;
+        
+        // SETTING VERTICAL VELOCITY
+        if (verticalAcceleration == 0){
+            if (verticalVelocity > 0.1)
+                verticalVelocity -= dt*FRICTION;
+            else if (verticalVelocity < -0.1)
+                verticalVelocity += dt*FRICTION;
+            else // (if verticalVelocity ~=0)
                 verticalVelocity = 0;
-                break;
-            default:
-                throw new AssertionError();
+        } 
+        else if (verticalAcceleration > 0){
+            if (verticalVelocity >=0)
+                verticalVelocity += dt*(verticalAcceleration-FRICTION);
+            else // (if verticalVelocity < 0)
+                verticalVelocity += dt*(verticalAcceleration+FRICTION);
+        }
+        else { // (if verticalAcceleration < 0)
+            if (verticalVelocity <=0)
+                verticalVelocity += dt*(verticalAcceleration+FRICTION);
+            else // (if verticalVelocity > 0)
+                verticalVelocity += dt*(verticalAcceleration-FRICTION);
+        }
+        
+        if (verticalVelocity < -MAX_VELOCITY)
+            verticalVelocity = -MAX_VELOCITY;
+        else if (verticalVelocity > MAX_VELOCITY)
+            verticalVelocity = MAX_VELOCITY; 
+    }
+    
+    private void setAcceleration() {
+        if ((rightArrowDown == false && leftArrowDown == false)
+           || (rightArrowDown == true && leftArrowDown == true)) {
+            horizontalAcceleration = 0;
+        } else if (rightArrowDown == true){
+            horizontalAcceleration = ACCELERATION;
+        } else if (leftArrowDown == true){
+            horizontalAcceleration = -ACCELERATION;
+        } else {
+            throw new AssertionError();
+        }
+        
+        if ((upArrowDown == false && downArrowDown == false)
+           || (upArrowDown == true && downArrowDown == true)) {
+            
+            verticalAcceleration = 0;
+        } else if (upArrowDown == true){
+            verticalAcceleration = -ACCELERATION;
+        } else if (downArrowDown == true){
+            verticalAcceleration = ACCELERATION;
+        } else {
+            throw new AssertionError();
         }
     }
     
@@ -173,18 +218,24 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     @Override
     public void update() {
-        if (getTranslateX() + velocity < BODY_WIDTH / 2 + 5) {
+        setVelocity();
+        
+        if (getTranslateX() + horizontalVelocity < BODY_WIDTH / 2 + 5) {
             setTranslateX(BODY_WIDTH / 2 + 5);
-        } else if (getTranslateX() + velocity > SpaceGalaga2D.getWINDOW_WIDTH() - BODY_WIDTH / 2 - 5) {
+            horizontalVelocity = 0;
+        } else if (getTranslateX() + horizontalVelocity > SpaceGalaga2D.getWINDOW_WIDTH() - BODY_WIDTH / 2 - 5) {
             setTranslateX(SpaceGalaga2D.getWINDOW_WIDTH() - BODY_WIDTH / 2 - 5);
+            horizontalVelocity = 0;
         } else {
-            setTranslateX(getTranslateX() + velocity);
+            setTranslateX(getTranslateX() + horizontalVelocity);
         }
         
         if (getTranslateY() + verticalVelocity < getHeight() + 5) {
             setTranslateY(getHeight() + 5);
+            verticalVelocity = 0;
         } else if (getTranslateY() + verticalVelocity > SpaceGalaga2D.getWINDOW_HEIGHT() - 5) {
             setTranslateY(SpaceGalaga2D.getWINDOW_HEIGHT() - 5);
+            verticalVelocity = 0;
         } else {
             setTranslateY(getTranslateY() + verticalVelocity);
         }
@@ -202,39 +253,15 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     break;
                 case RIGHT:
                     rightArrowDown = true;
-                    if (leftArrowDown){
-                        horizontalDirection = HorizontalDirection.STILL;
-                    } else {
-                        horizontalDirection = HorizontalDirection.RIGHT;
-                    }
-                    setVelocity();
                     break;
                 case LEFT:
                     leftArrowDown = true;
-                    if (rightArrowDown){
-                        horizontalDirection = HorizontalDirection.STILL;
-                    } else {
-                        horizontalDirection = HorizontalDirection.LEFT;
-                    }
-                    setVelocity();
                     break;
                 case UP:
                     upArrowDown = true;
-                    if (downArrowDown){
-                        verticalDirection = VerticalDirection.STILL;
-                    } else {
-                        verticalDirection = VerticalDirection.UP;
-                    }
-                    setVelocity();
                     break;
                 case DOWN:
                     downArrowDown = true;
-                    if (upArrowDown){
-                        verticalDirection = verticalDirection.STILL;
-                    } else {
-                        verticalDirection = VerticalDirection.DOWN;
-                    }
-                    setVelocity();
                     break;
                 case DIGIT1:
                     playerCamera = false;
@@ -251,43 +278,21 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             switch (event.getCode()) {
                 case RIGHT:
                     rightArrowDown = false;
-                    if (leftArrowDown){
-                        horizontalDirection = HorizontalDirection.LEFT;
-                    } else {
-                        horizontalDirection = HorizontalDirection.STILL;
-                    }
-                    setVelocity();
                     break;
                 case LEFT:
                     leftArrowDown = false;
-                    if (rightArrowDown){
-                        horizontalDirection = HorizontalDirection.RIGHT;
-                    } else {
-                        horizontalDirection = HorizontalDirection.STILL;
-                    }
-                    setVelocity();
                     break;
                 case UP:
                     upArrowDown = false;
-                    if (downArrowDown){
-                        verticalDirection = VerticalDirection.DOWN;
-                    } else {
-                        verticalDirection = VerticalDirection.STILL;
-                    }
-                    setVelocity();
                     break;
                 case DOWN:
                     downArrowDown = false;
-                    if (upArrowDown){
-                        verticalDirection = verticalDirection.UP;
-                    } else {
-                        verticalDirection = VerticalDirection.STILL;
-                    }
-                    setVelocity();
                     break;
                 default:
                     throw new AssertionError();
             }
         }
+        
+        setAcceleration();
     }
 }
