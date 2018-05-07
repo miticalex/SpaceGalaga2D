@@ -493,14 +493,10 @@ public class SpaceGalaga2D extends Application {
                 player.setShots(shots);
             }
             
-            root.getChildren().remove(elapsed);
             elapsed.setText("Time: " + (int)time);
             elapsed.setTranslateX(WINDOW_WIDTH/2 - elapsed.getBoundsInParent().getWidth()/2);
-            root.getChildren().add(elapsed);
             
-            //root.getChildren().remove(pointsField);
             pointsField.setText("Points: " + (int)points);
-            //root.getChildren().add(pointsField);
             
             time += 1.0 / 60;
         }
