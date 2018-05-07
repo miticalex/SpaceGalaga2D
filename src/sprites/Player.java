@@ -29,7 +29,9 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static final int JET_PIPE_HEIGHT = 20;
     private static final int JET_INTENSITY = 60;
     
-    private static final double VELOCITY = 10;
+    private static final double ACCELERATION = 20;
+    private static final double MAX_VELOCITY = 20;
+    private static final double FRICTION = 5;
     
     public static int getWidth() {
         return BODY_WIDTH;
@@ -43,6 +45,9 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     private static boolean leftArrowDown = false;
     private static boolean upArrowDown = false;
     private static boolean downArrowDown = false;
+    
+    private double horizontalAcceleration = 0;
+    private double verticalAcceleration = 0;
     
     private double horizontalVelocity = 0;
     private double verticalVelocity = 0;
@@ -122,24 +127,83 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     }
     
     private void setVelocity() {
+        double dt = 1/60.0;
+        
+        // SETTING HORIZONTAL VELOCITY
+        if (horizontalAcceleration == 0){
+            if (horizontalVelocity > 0.1)
+                horizontalVelocity -= dt*FRICTION;
+            else if (horizontalVelocity < -0.1)
+                horizontalVelocity += dt*FRICTION;
+            else // (if horizontalVelocity ~=0)
+                horizontalVelocity = 0;
+        } 
+        else if (horizontalAcceleration > 0){
+            if (horizontalVelocity >=0)
+                horizontalVelocity += dt*(horizontalAcceleration-FRICTION);
+            else // (if horizontalVelocity < 0)
+                horizontalVelocity += dt*(horizontalAcceleration+FRICTION);
+        }
+        else { // (if horizontalAcceleration < 0)
+            if (horizontalVelocity <=0)
+                horizontalVelocity += dt*(horizontalAcceleration+FRICTION);
+            else // (if horizontalVelocity > 0)
+                horizontalVelocity += dt*(horizontalAcceleration-FRICTION);
+        }
+        
+        if (horizontalVelocity < -MAX_VELOCITY)
+            horizontalVelocity = -MAX_VELOCITY;
+        else if (horizontalVelocity > MAX_VELOCITY)
+            horizontalVelocity = MAX_VELOCITY;
+        
+        // SETTING VERTICAL VELOCITY
+        if (verticalAcceleration == 0){
+            if (verticalVelocity > 0.1)
+                verticalVelocity -= dt*FRICTION;
+            else if (verticalVelocity < -0.1)
+                verticalVelocity += dt*FRICTION;
+            else // (if verticalVelocity ~=0)
+                verticalVelocity = 0;
+        } 
+        else if (verticalAcceleration > 0){
+            if (verticalVelocity >=0)
+                verticalVelocity += dt*(verticalAcceleration-FRICTION);
+            else // (if verticalVelocity < 0)
+                verticalVelocity += dt*(verticalAcceleration+FRICTION);
+        }
+        else { // (if verticalAcceleration < 0)
+            if (verticalVelocity <=0)
+                verticalVelocity += dt*(verticalAcceleration+FRICTION);
+            else // (if verticalVelocity > 0)
+                verticalVelocity += dt*(verticalAcceleration-FRICTION);
+        }
+        
+        if (verticalVelocity < -MAX_VELOCITY)
+            verticalVelocity = -MAX_VELOCITY;
+        else if (verticalVelocity > MAX_VELOCITY)
+            verticalVelocity = MAX_VELOCITY; 
+    }
+    
+    private void setAcceleration() {
         if ((rightArrowDown == false && leftArrowDown == false)
            || (rightArrowDown == true && leftArrowDown == true)) {
-            horizontalVelocity = 0;
+            horizontalAcceleration = 0;
         } else if (rightArrowDown == true){
-            horizontalVelocity = VELOCITY;
+            horizontalAcceleration = ACCELERATION;
         } else if (leftArrowDown == true){
-            horizontalVelocity = - VELOCITY;
+            horizontalAcceleration = -ACCELERATION;
         } else {
             throw new AssertionError();
         }
         
         if ((upArrowDown == false && downArrowDown == false)
            || (upArrowDown == true && downArrowDown == true)) {
-            verticalVelocity = 0;
+            
+            verticalAcceleration = 0;
         } else if (upArrowDown == true){
-            verticalVelocity = - VELOCITY;
+            verticalAcceleration = -ACCELERATION;
         } else if (downArrowDown == true){
-            verticalVelocity = VELOCITY;
+            verticalAcceleration = ACCELERATION;
         } else {
             throw new AssertionError();
         }
@@ -154,18 +218,24 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     @Override
     public void update() {
+        setVelocity();
+        
         if (getTranslateX() + horizontalVelocity < BODY_WIDTH / 2 + 5) {
             setTranslateX(BODY_WIDTH / 2 + 5);
+            horizontalVelocity = 0;
         } else if (getTranslateX() + horizontalVelocity > SpaceGalaga2D.getWINDOW_WIDTH() - BODY_WIDTH / 2 - 5) {
             setTranslateX(SpaceGalaga2D.getWINDOW_WIDTH() - BODY_WIDTH / 2 - 5);
+            horizontalVelocity = 0;
         } else {
             setTranslateX(getTranslateX() + horizontalVelocity);
         }
         
         if (getTranslateY() + verticalVelocity < getHeight() + 5) {
             setTranslateY(getHeight() + 5);
+            verticalVelocity = 0;
         } else if (getTranslateY() + verticalVelocity > SpaceGalaga2D.getWINDOW_HEIGHT() - 5) {
             setTranslateY(SpaceGalaga2D.getWINDOW_HEIGHT() - 5);
+            verticalVelocity = 0;
         } else {
             setTranslateY(getTranslateY() + verticalVelocity);
         }
@@ -223,6 +293,6 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
             }
         }
         
-        setVelocity();
+        setAcceleration();
     }
 }
