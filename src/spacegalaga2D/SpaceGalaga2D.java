@@ -72,7 +72,7 @@ public class SpaceGalaga2D extends Application {
     
     private static final int ENEMIES_IN_A_ROW = 6;
     private static final int ENEMIES_IN_A_COLUMN = 3;
-    private static final int SPACE_BTW_ENEMIES = 100;
+    private static final double SPACE_BTW_ENEMIES = Enemy.getBODY_HEIGHT()*2;
     private static final double ENEMIES_VELOCITY = 1.5;
     private double enemiesVelocity = ENEMIES_VELOCITY;
     
@@ -342,7 +342,7 @@ public class SpaceGalaga2D extends Application {
         }
         
         path.getPoints().addAll(xEnd, yEnd);
-        path.getPoints().addAll(xEnd, WINDOW_HEIGHT + 100.0);
+        path.getPoints().addAll(random.nextDouble()*WINDOW_WIDTH, WINDOW_HEIGHT + 100.0);
         //path.getPoints().addAll(xEnd+100, k*(xEnd+100));
         
         PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, arrow);
