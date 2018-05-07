@@ -27,7 +27,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
     
     private static final int JET_PIPE_WIDTH = 20;
     private static final int JET_PIPE_HEIGHT = 20;
-    private static final int JET_INTENSITY = 30;
+    private static final int JET_INTENSITY = 60;
     
     private static final double VELOCITY = 10;
     
