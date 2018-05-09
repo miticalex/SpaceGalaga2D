@@ -52,7 +52,6 @@ public class Enemy extends Sprite {
     private Ellipse spittingMouth;
     
     private boolean hit = false; 
-    private double timeToLive = 2.0;
     private boolean dead = false;
 
     public boolean isHit() {
@@ -224,16 +223,12 @@ public class Enemy extends Sprite {
         fadeAway.setFromValue(1);
         fadeAway.setToValue(0);
         fadeAway.setInterpolator(Interpolator.LINEAR);
+        fadeAway.setOnFinished(finished -> {dead = true;});
         fadeAway.play();
     }
     
     @Override
     public void update() {
-        if (hit){
-            timeToLive-= 1./60;
-            if (timeToLive < 0)
-                dead = true;
-        }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

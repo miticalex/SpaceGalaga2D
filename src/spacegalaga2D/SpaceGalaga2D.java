@@ -401,7 +401,6 @@ public class SpaceGalaga2D extends Application {
         
         if (theEnd == false) {
             for (Enemy enemy : enemies) {
-                enemy.update();
                 if (enemy.isDead()){
                     // creating coin
                     double coinInitVelocityY = -COIN_MIN_INIT_VELOCITY_Y 
