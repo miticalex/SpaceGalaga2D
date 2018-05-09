@@ -3,9 +3,12 @@ package sprites;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -23,6 +26,7 @@ public class Enemy extends Sprite {
     private static final int BODY_CENTRE_Y = BODY_HEIGHT/2;
     
     private static final int DISAPPEARANCE_DURATION = 2;
+    private static final double SPITTING_DURATION = 0.3;
 
     public static int getBODY_WIDTH() {
         return BODY_WIDTH;
@@ -44,6 +48,8 @@ public class Enemy extends Sprite {
     private Arc mouth;
     private Ellipse lEye, rEye;
     private Circle lPupil, rPupil;
+    
+    private Ellipse spittingMouth;
     
     private boolean hit = false; 
     private double timeToLive = 2.0;
@@ -85,6 +91,14 @@ public class Enemy extends Sprite {
         mouth.setFill(Color.BLACK);
         
         this.getChildren().add(mouth);
+    }
+    
+    private void addSpittingMouth(){
+        spittingMouth = new Ellipse(BODY_CENTRE_X, BODY_CENTRE_Y+MOUTH_HEIGHT, MOUTH_WIDTH/2, MOUTH_HEIGHT/2); 
+        spittingMouth.setFill(Color.BLACK);
+        spittingMouth.setStroke(null);
+        
+        this.getChildren().add(spittingMouth);
     }
     
     private void addEyes(){
@@ -162,12 +176,36 @@ public class Enemy extends Sprite {
         addEars();
         addBody();
         addMouth();
+        addSpittingMouth(); spittingMouth.setVisible(false);
         addEyes();
         
         rotateWings();
     }
     
+    private void makeSpittingAnimation(){
+        mouth.setVisible(false);
+        spittingMouth.setVisible(true);
+        
+        KeyValue startValue = new KeyValue(spittingMouth.radiusXProperty(), 0.4*MOUTH_WIDTH/2);
+        KeyValue endValue = new KeyValue(spittingMouth.radiusXProperty(), MOUTH_WIDTH/2, Interpolator.EASE_BOTH);
+        
+        KeyFrame startFrame = new KeyFrame(Duration.ZERO, startValue);
+        KeyFrame endFrame = new KeyFrame(Duration.seconds(SPITTING_DURATION), endValue);
+        
+        Timeline timeline = new Timeline(startFrame, endFrame);
+                
+        timeline.setOnFinished(finished -> turnBackSmilingFace());
+        timeline.play();
+    }
+    
+    private void turnBackSmilingFace(){
+        mouth.setVisible(true);
+        spittingMouth.setVisible(false);
+    }
+    
     public Arrow fireArrow(){
+        makeSpittingAnimation();
+        
         return new Arrow(this.getTranslateX() + BODY_WIDTH/2, 
                 this.getTranslateY() + BODY_HEIGHT);
     }

@@ -299,7 +299,7 @@ public class SpaceGalaga2D extends Application {
         }
     }
     
-    private void fireArrow(Arrow arrow){
+    private void aimPlayer(Arrow arrow){
         //arrow.setRotate(90);
                 
         int numTurns = 3 + random.nextInt(3);
@@ -466,10 +466,12 @@ public class SpaceGalaga2D extends Application {
             
             //FIRE AN ARROW AT THE PLAYER EACH ENEMY_FIRING_FREQUENCY SECONDS
             if (random.nextDouble() < 1.0/(FPS*ENEMY_FIRING_FREQUENCY)){
-                Arrow arrow = enemies.get(random.nextInt(enemies.size())).fireArrow();
+                Enemy randomEnemy = enemies.get(random.nextInt(enemies.size()));
+                
+                Arrow arrow = randomEnemy.fireArrow();
                 
                 arrows.add(arrow);
-                fireArrow(arrow);
+                aimPlayer(arrow);
             }
             
             arrows.forEach(arrow -> {
