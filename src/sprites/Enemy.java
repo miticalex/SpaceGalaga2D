@@ -104,7 +104,7 @@ public class Enemy extends Sprite {
         lEye = new Ellipse(BODY_CENTRE_X - BODY_WIDTH/4.5, BODY_HEIGHT/3, 
                             BODY_WIDTH/7, BODY_HEIGHT/8);
         lEye.setFill(Color.WHITE);
-        lEye.setStroke(Color.GREY);
+        lEye.setStroke(Color.color(0.3, 0.3, 0.3)); // VERY DARK GREY
         lEye.setStrokeWidth(0.5);
         lPupil = new Circle(BODY_CENTRE_X - BODY_WIDTH/4.5, BODY_HEIGHT/3, BODY_HEIGHT/20);
         lPupil.setFill(Color.BLACK);
@@ -112,7 +112,7 @@ public class Enemy extends Sprite {
         rEye = new Ellipse(BODY_CENTRE_X + BODY_WIDTH/4.5, BODY_HEIGHT/3,
                             BODY_WIDTH/7, BODY_HEIGHT/8);
         rEye.setFill(Color.WHITE);
-        rEye.setStroke(Color.GREY);
+        rEye.setStroke(Color.color(0.3, 0.3, 0.3)); // VERY DARK GREY
         rEye.setStrokeWidth(0.5);
         rPupil = new Circle(BODY_CENTRE_X + BODY_WIDTH/4.5, BODY_HEIGHT/3, BODY_HEIGHT/20);
         rPupil.setFill(Color.BLACK);
