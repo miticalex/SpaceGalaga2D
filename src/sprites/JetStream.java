@@ -54,6 +54,7 @@ public class JetStream extends Sprite {
     private double width;
     private double intensity;
     
+    //TODO - CONSIDER - Possible to implement through vertical 10 rectangles and linear gradient with 30 stops
     private final int[][] colorCodes = new int[10][30];
     private final Rectangle[][] molecules = new Rectangle[10][30];
     
