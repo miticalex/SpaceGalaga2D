@@ -104,7 +104,7 @@ public class Enemy extends Sprite {
         lEye = new Ellipse(BODY_CENTRE_X - BODY_WIDTH/4.5, BODY_HEIGHT/3, 
                             BODY_WIDTH/7, BODY_HEIGHT/8);
         lEye.setFill(Color.WHITE);
-        lEye.setStroke(Color.GREY);
+        lEye.setStroke(Color.color(0.2, 0.2, 0.2)); //VERY DARK GRAY
         lEye.setStrokeWidth(0.5);
         lPupil = new Circle(BODY_CENTRE_X - BODY_WIDTH/4.5, BODY_HEIGHT/3, BODY_HEIGHT/20);
         lPupil.setFill(Color.BLACK);
@@ -112,7 +112,7 @@ public class Enemy extends Sprite {
         rEye = new Ellipse(BODY_CENTRE_X + BODY_WIDTH/4.5, BODY_HEIGHT/3,
                             BODY_WIDTH/7, BODY_HEIGHT/8);
         rEye.setFill(Color.WHITE);
-        rEye.setStroke(Color.GREY);
+        rEye.setStroke(Color.color(0.2, 0.2, 0.2)); //VERY DARK GRAY
         rEye.setStrokeWidth(0.5);
         rPupil = new Circle(BODY_CENTRE_X + BODY_WIDTH/4.5, BODY_HEIGHT/3, BODY_HEIGHT/20);
         rPupil.setFill(Color.BLACK);
@@ -137,10 +137,10 @@ public class Enemy extends Sprite {
     public void addRightWink(){
         ScaleTransition stE = new ScaleTransition(Duration.seconds(2), rEye);
         stE.setFromY(1);
-        stE.setToY(0.5);
+        stE.setToY(0.4);
         ScaleTransition stP = new ScaleTransition(Duration.seconds(2), rPupil);
         stP.setFromY(1);
-        stP.setToY(0.5);
+        stP.setToY(0.4);
         
         ParallelTransition st = new ParallelTransition(stE, stP);
         st.setAutoReverse(true);
