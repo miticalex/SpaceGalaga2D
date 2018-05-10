@@ -185,8 +185,8 @@ public class Enemy extends Sprite {
         mouth.setVisible(false);
         spittingMouth.setVisible(true);
         
-        KeyValue startValue = new KeyValue(spittingMouth.radiusXProperty(), 0.4*MOUTH_WIDTH/2);
-        KeyValue endValue = new KeyValue(spittingMouth.radiusXProperty(), MOUTH_WIDTH/2, Interpolator.EASE_BOTH);
+        KeyValue startValue = new KeyValue(spittingMouth.radiusXProperty(), 0.15*MOUTH_WIDTH);
+        KeyValue endValue = new KeyValue(spittingMouth.radiusXProperty(), 0.5*MOUTH_WIDTH, Interpolator.EASE_BOTH);
         
         KeyFrame startFrame = new KeyFrame(Duration.ZERO, startValue);
         KeyFrame endFrame = new KeyFrame(Duration.seconds(SPITTING_DURATION), endValue);
