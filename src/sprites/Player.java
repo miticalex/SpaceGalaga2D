@@ -83,7 +83,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         this.shots = shots;
     }
     
-    public void addBody(){
+    private void addBody(){
 //        body = new Rectangle(0, 0, WIDTH, HEIGHT);
 //        body.setTranslateX(- WIDTH/2);
         body = new Path();
@@ -98,7 +98,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         this.getChildren().add(body);
     }
     
-    public void addGun(){
+    private void addGun(){
 //        gun = new Rectangle(0, 0, GUN_WIDTH, GUN_HEIGHT);     
 //        gun.setTranslateX(- GUN_WIDTH/2);
 //        gun.setTranslateY(- GUN_HEIGHT);
@@ -110,7 +110,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         this.getChildren().add(gun);
     }
     
-    public void addEngines(){
+    private void addEngines(){
         LinearGradient pipesColor = new LinearGradient(0, 0, 0.5, 0, true, 
                 CycleMethod.REFLECT, 
                 new Stop[] {
