@@ -11,6 +11,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -82,7 +83,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         this.shots = shots;
     }
     
-    public Player() {
+    public void addBody(){
 //        body = new Rectangle(0, 0, WIDTH, HEIGHT);
 //        body.setTranslateX(- WIDTH/2);
         body = new Path();
@@ -94,14 +95,22 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         body.setFill(Color.SKYBLUE);
         body.setStroke(null);
         
+        this.getChildren().add(body);
+    }
+    
+    public void addGun(){
 //        gun = new Rectangle(0, 0, GUN_WIDTH, GUN_HEIGHT);     
 //        gun.setTranslateX(- GUN_WIDTH/2);
 //        gun.setTranslateY(- GUN_HEIGHT);
-        gun = new Arc(0, - BODY_HEIGHT, GUN_WIDTH/2, GUN_HEIGHT, 0, 180);
+        gun = new Arc(0, - BODY_HEIGHT, GUN_WIDTH/2, GUN_HEIGHT, -10, 200);
         gun.setFill(Color.BLACK);
         gun.setStroke(Color.SKYBLUE);
         gun.setStrokeWidth(GUN_STROKE_WIDTH);
         
+        this.getChildren().add(gun);
+    }
+    
+    public void addEngines(){
         LinearGradient pipesColor = new LinearGradient(0, 0, 0.5, 0, true, 
                 CycleMethod.REFLECT, 
                 new Stop[] {
@@ -109,6 +118,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     new Stop(0.8, Color.GOLD)// LIGHTSALMON
                 });
         
+        // ADDING JET ENGINE PIPES
         leftJetPipe = new Rectangle(-BODY_WIDTH*0.55-JET_PIPE_WIDTH, -JET_PIPE_HEIGHT, 
                                     JET_PIPE_WIDTH, JET_PIPE_HEIGHT);
         leftJetPipe.setStroke(null);
@@ -118,12 +128,19 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
         rightJetPipe.setStroke(null);
         rightJetPipe.setFill(pipesColor);
         
+        // ADDING JETS
         leftJet = new JetStream(JET_PIPE_WIDTH, JET_INTENSITY);
         leftJet.setTranslateX(-BODY_WIDTH*0.55-20);
         rightJet = new JetStream(JET_PIPE_WIDTH, JET_INTENSITY);
         rightJet.setTranslateX(BODY_WIDTH*0.55);
         
-        this.getChildren().addAll(body, gun, leftJetPipe, rightJetPipe, leftJet, rightJet);
+        this.getChildren().addAll(leftJetPipe, rightJetPipe, leftJet, rightJet);
+    }
+    
+    public Player() {
+        addBody();
+        addGun();
+        addEngines();
     }
     
     private void setVelocity() {
