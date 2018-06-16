@@ -379,7 +379,9 @@ public class SpaceGalaga2D extends Application {
         new AnimationTimer() {
             @Override
             public void handle(long currentNanoTime) {
-                update();
+                //try {
+                    update();
+                //} catch (Exception e) {}
             }
         }.start();
     }

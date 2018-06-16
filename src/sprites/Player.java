@@ -287,7 +287,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     playerCamera = true;
                     break;
                 default:
-                    throw new AssertionError();
+                    // DO NOTHING
             }
         }
         
@@ -306,7 +306,7 @@ public class Player extends Sprite implements EventHandler<KeyEvent> {
                     downArrowDown = false;
                     break;
                 default:
-                    throw new AssertionError();
+                    // DO NOTHING
             }
         }
         
