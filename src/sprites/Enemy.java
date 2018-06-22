@@ -26,7 +26,7 @@ public class Enemy extends Sprite {
     private static final int BODY_CENTRE_Y = BODY_HEIGHT/2;
     
     private static final int DISAPPEARANCE_DURATION = 2;
-    private static final double SPITTING_DURATION = 0.3;
+    private static final double SPITTING_DURATION = 0.5;
 
     public static int getBODY_WIDTH() {
         return BODY_WIDTH;
