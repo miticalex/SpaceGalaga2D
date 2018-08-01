@@ -17,6 +17,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polyline;
@@ -75,7 +77,7 @@ public class SpaceGalaga2D extends Application {
     private static final double SPACE_BTW_ENEMIES = Enemy.getBODY_HEIGHT()*2.0;
     private static final double ENEMIES_VELOCITY = 1.5;
     private double enemiesVelocity = ENEMIES_VELOCITY;
-    
+
     private enum EnemiesDirection {LEFT, RIGHT};
     private EnemiesDirection enemiesDirection = EnemiesDirection.RIGHT;
     double timeBeforeEnemiesChangeDirection = 0.5;
@@ -86,6 +88,7 @@ public class SpaceGalaga2D extends Application {
     
     private final Random random =  new Random();
     
+    private Stage window;
     private Group root;
     private Camera2D camera;
     private Background background;
@@ -101,12 +104,15 @@ public class SpaceGalaga2D extends Application {
     private List<Arrow> arrows;
     private List<FallingCoin> coins;
     
-    private double time = 0;
-    private int points = 0;
-    private boolean theEnd = false;
+    private double time;
+    private int points;
+    private boolean theEnd;
     
     private Text elapsed;
     private Text pointsField;
+    
+    private Text helpField;
+    private VBox controlsVBox;
     
     private Text theEndLabel;
     private Text pointsEarnedLabel;
@@ -191,6 +197,37 @@ public class SpaceGalaga2D extends Application {
         pointsField.setStroke(Color.RED);
         
         root.getChildren().add(pointsField);
+    }
+    
+    private void addHelpField(){
+        helpField = new Text(100, LABELS_POSITION_Y, "Hold H for controls");
+        helpField.setFont(new Font(16));
+        helpField.setFill(Color.RED);
+        helpField.setStroke(Color.RED);
+        
+        root.getChildren().add(helpField);
+    }
+    
+    private void addControls(){
+        Text movingControls = new Text("Moving: \t\t\t\t\tArrows");
+        movingControls.setFont(new Font(20));
+        movingControls.setFill(Color.YELLOW);
+        Text cameraControls = new Text("Screen / Player Camera: \t\t \"1\" / \"2\"");
+        cameraControls.setFont(new Font(20));
+        cameraControls.setFill(Color.YELLOW);
+        Text shootingControls = new Text("Shooting: \t\t\t\tSpace");
+        shootingControls.setFont(new Font(20));
+        shootingControls.setFill(Color.YELLOW);
+        Text newGameControls = new Text("New Game: \t\t\t\tF2");
+        newGameControls.setFont(new Font(20));
+        newGameControls.setFill(Color.YELLOW);
+        
+        controlsVBox = new VBox(movingControls, cameraControls, shootingControls, newGameControls);
+        controlsVBox.setTranslateX(WINDOW_WIDTH/2 - controlsVBox.getBoundsInParent().getWidth()/2);
+        controlsVBox.setTranslateY(WINDOW_HEIGHT/2 - controlsVBox.getBoundsInParent().getHeight()/2);
+        
+        controlsVBox.setVisible(false);
+        root.getChildren().add(controlsVBox);
     }
     
     private void setTheEnd(){
@@ -352,6 +389,19 @@ public class SpaceGalaga2D extends Application {
     
     @Override
     public void start(Stage window) {
+        initialise(window);
+        
+        new AnimationTimer() {
+            @Override
+            public void handle(long currentNanoTime) {
+                //try {
+                    update();
+                //} catch (Exception e) {}
+            }
+        }.start();
+    }
+    
+    public void initialise(Stage window){
         root = new Group();
         setBackground(Color.BLACK, Color.DARKBLUE);
         camera = new Camera2D();
@@ -364,26 +414,41 @@ public class SpaceGalaga2D extends Application {
         
         root.getChildren().add(camera);
         
+        time = 0;
+        points = 0;
+        theEnd = false;
+        
         addTimeField();
         addPointsField();
+        addHelpField();
+        addControls();
         
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, false, SceneAntialiasing.BALANCED);
         scene.setOnKeyPressed(player);
         scene.setOnKeyReleased(player);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, e-> onKeyPressed(e));
+        scene.addEventHandler(KeyEvent.KEY_RELEASED, e-> onKeyReleased(e));
         
         window.setTitle(TITLE);
         window.setScene(scene);
         window.setResizable(false);
         window.show();
         
-        new AnimationTimer() {
-            @Override
-            public void handle(long currentNanoTime) {
-                //try {
-                    update();
-                //} catch (Exception e) {}
-            }
-        }.start();
+        this.window = window;
+    }
+    
+    private void onKeyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case F2: initialise(window); break;
+            case H: controlsVBox.setVisible(true); break;                
+            default: break;
+        }
+    }
+    private void onKeyReleased(KeyEvent e) {
+        switch (e.getCode()) {
+            case H: controlsVBox.setVisible(false); break;                
+            default: break;
+        }
     }
 
     public void update() {
