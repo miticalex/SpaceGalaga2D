@@ -168,6 +168,7 @@ public class SpaceGalaga2D extends Application {
                 camera.getChildren().add(enemy);
                 enemies.add(enemy);
             }
+        timeBeforeEnemiesChangeDirection = -0.01;
     }
     
     private void setPlayer(){
